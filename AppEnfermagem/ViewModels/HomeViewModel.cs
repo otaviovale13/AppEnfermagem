@@ -1,6 +1,6 @@
 ﻿namespace AppEnfermagem.ViewModels;
 
-public class AppShellViewModel
+public class HomeViewModel
 {
 
 }

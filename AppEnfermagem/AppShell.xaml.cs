@@ -6,7 +6,5 @@
         {
             InitializeComponent();
         }
-
-        // Add any additional methods or properties for AppShell here
     }
 }

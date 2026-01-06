@@ -1,18 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+namespace AppEnfermagem.Services;
 
-namespace AppEnfermagem.Services
+public interface IContentService
 {
-    public interface IContentService
-    {
 
-    }
+}
 
-    public class ContentService : IContentService
-    {
+public class ContentService : IContentService
+{
 
-    }
 }
