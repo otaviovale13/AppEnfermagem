@@ -9,8 +9,23 @@
     Title="AppEnfermagem">
 
     <ShellContent
+        Title="Loading"
+        ContentTemplate="{DataTemplate local:LoadingPage}"
+        Route="LoadingPage" />
+
+    <ShellContent
         Title="Home"
         ContentTemplate="{DataTemplate local:HomePage}"
         Route="HomePage" />
+
+    <ShellContent
+        Title="Login"
+        ContentTemplate="{DataTemplate local:LoginPage}"
+        Route="LoginPage" />
+
+    <ShellContent
+        Title="Adm"
+        ContentTemplate="{DataTemplate local:AdmPage}"
+        Route="AdmPage" />
 
 </Shell>

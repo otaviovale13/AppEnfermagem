@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="AppEnfermagem.Views.LoginPage"
+             Title="LoginPage"
+             BackgroundColor="#F8F8F8">
+    
+    <ScrollView VerticalOptions="FillAndExpand">
+        <Grid VerticalOptions="CenterAndExpand" Padding="20">
+
+            <Border BackgroundColor="#004AAD" 
+                StrokeShape="RoundRectangle 25"
+                StrokeThickness="0"
+                Padding="24, 30"
+                VerticalOptions="Center">
+
+                <VerticalStackLayout Spacing="15">
+
+                    <Label Text="Bem-vindo de Volta!"
+                       TextColor="#F8F8F8"
+                       FontSize="20"
+                       FontAttributes="Bold"
+                       HorizontalOptions="Center" />
+
+                    <Label Text="Digite sua senha para continuar!"
+                       TextColor="#F8F8F8"
+                       FontSize="12"
+                       HorizontalOptions="Center"
+                       HorizontalTextAlignment="Center"
+                       Margin="0,0,0,10"/>
+
+                    <Border Stroke="#F8F8F8"
+                            StrokeThickness="3"
+                            StrokeShape="RoundRectangle 50"
+                            BackgroundColor="Transparent"
+                            HeightRequest="45"
+                            Padding="10,0"
+                            Margin="0,0,0,15">
+                                            <Entry Placeholder="Usuário"
+                               PlaceholderColor="#000000"
+                               TextColor="#E1E1E6"
+                               VerticalOptions="Center"
+                               Text="{Binding Usuario}" />
+                    </Border>
+
+                    <Border Stroke="#F8F8F8"
+                        StrokeThickness="3"
+                        StrokeShape="RoundRectangle 50"
+                        BackgroundColor="Transparent"
+                        HeightRequest="45"
+                        Padding="10,0">
+                        <Entry Placeholder="Senha"
+                           IsPassword="True"
+                           PlaceholderColor="#000000"
+                           TextColor="#E1E1E6"
+                           VerticalOptions="Center"
+                           Text="{Binding Senha}" />
+                    </Border>
+
+                    <HorizontalStackLayout HorizontalOptions="Center" Spacing="20">
+                        <Button Text="Voltar"
+                                TextColor="#8EDDDE"
+                                BackgroundColor="Transparent"
+                                BorderColor="#8EDDDE"
+                                BorderWidth="3"
+                                FontSize="15"
+                                CornerRadius="20"
+                                FontAttributes="Bold"
+                                HeightRequest="45"
+                                WidthRequest="150"
+                                HorizontalOptions="Center"
+                                Margin="0,15,0,0"
+                                Command="{Binding VoltarCommand}" />
+
+                        <Button Text="Entrar"
+                                TextColor="#004AAD"
+                                BackgroundColor="#8EDDDE"
+                                BorderColor="Transparent"
+                                BorderWidth="1"
+                                FontSize="15"
+                                CornerRadius="20"
+                                FontAttributes="Bold"
+                                HeightRequest="45"
+                                WidthRequest="150"
+                                HorizontalOptions="Center"
+                                Margin="0,15,0,0"
+                                Command="{Binding LoginCommand}" />
+                    </HorizontalStackLayout>
+                </VerticalStackLayout>
+            </Border>
+            
+            <Grid BackgroundColor="#80000000" IsVisible="{Binding IsLoading}" HorizontalOptions="Fill" VerticalOptions="Fill">
+                <ActivityIndicator IsRunning="{Binding IsLoading}" Color="White" VerticalOptions="Center" HorizontalOptions="Center"/>
+            </Grid>
+        </Grid>
+    </ScrollView>
+</ContentPage>

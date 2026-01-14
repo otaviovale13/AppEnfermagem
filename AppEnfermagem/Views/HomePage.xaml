@@ -2,6 +2,10 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="AppEnfermagem.Views.HomePage"
+             xmlns:vm="clr-namespace:AppEnfermagem.ViewModels"
+             xmlns:models="clr-namespace:AppEnfermagem.Moldes" 
+             xmlns:core="clr-namespace:AppEnfermagem.Models" 
+             x:DataType="vm:HomeViewModel"
              Title="HomePage"
              BackgroundColor="#F8F8F8">
 
@@ -9,94 +13,141 @@
         <Grid>
             <VerticalStackLayout Margin="20" Spacing="50">
                 <HorizontalStackLayout Spacing="20">
-                    <Image Source="bars.svg" HorizontalOptions="Start" />
-                    <Image Source="admin.svg" HorizontalOptions="Start" />
+                    <Image Source="bars_png.png" HorizontalOptions="Start" />
+                    <Image Source="admin_png.png" HorizontalOptions="Start">
+                        <Image.GestureRecognizers>
+                            <TapGestureRecognizer Command="{Binding IrLoginCommand}" />
+                        </Image.GestureRecognizers>
+                    </Image>
                 </HorizontalStackLayout>
 
                 <VerticalStackLayout HorizontalOptions="Center" VerticalOptions="Center" Spacing="30">
                     <Border Stroke="#004AAD" StrokeThickness="3" StrokeShape="RoundRectangle 35" BackgroundColor="White" HeightRequest="46" WidthRequest="333">
                         <Grid ColumnDefinitions="*, Auto">
-                            <Entry Grid.Column="0" Placeholder="Pesquise mais artigos..." PlaceholderColor="Black" TextColor="Black" FontSize="16" VerticalOptions="Center"  Margin="15,0,10,0" BackgroundColor="Transparent" />
-                            <Border Grid.Column="1" StrokeShape="RoundRectangle 35" BackgroundColor="#004AAD" HeightRequest="46" WidthRequest="46" Padding="12">
-                                <Image Source="serach.svg" />
+                            <Entry Text="{Binding Input}" Grid.Column="0" Placeholder="Pesquise mais artigos..." PlaceholderColor="Black" TextColor="Black" FontSize="16" VerticalOptions="Center"  Margin="15,0,10,0" BackgroundColor="Transparent" />
+                            <Border Grid.Column="1" 
+                                    StrokeShape="RoundRectangle 35" 
+                                    BackgroundColor="#004AAD" 
+                                    HeightRequest="46" 
+                                    WidthRequest="46" 
+                                    Padding="12">
+
+                                <Border.GestureRecognizers>
+                                    <TapGestureRecognizer Command="{Binding PesquisarCommand}" />
+                                </Border.GestureRecognizers>
+
+                                <Image Source="search_png.png" />
                             </Border>
                         </Grid>
                     </Border>
 
-                    <HorizontalStackLayout Spacing="17">
-                        <VerticalStackLayout HorizontalOptions="Center" VerticalOptions="Center" Spacing="7">
-                            <Border StrokeShape="RoundRectangle 25" BackgroundColor="#8EDDDE" HeightRequest="100" WidthRequest="100">
-                                <Image Source="coracao.svg" HeightRequest="62" WidthRequest="72" />
-                            </Border>
-                            <Label Text="Protocolos" HorizontalTextAlignment="Center" />
-                        </VerticalStackLayout>
-                        <VerticalStackLayout HorizontalOptions="Center" VerticalOptions="Center" Spacing="7">
-                            <Border StrokeShape="RoundRectangle 25" BackgroundColor="#004AAD" HeightRequest="100" WidthRequest="100">
-                                <Image Source="curativo.svg" HeightRequest="62" WidthRequest="72" />
-                            </Border>
-                            <Label Text="Medicamentos" HorizontalTextAlignment="Center" />
-                        </VerticalStackLayout>
-                        <VerticalStackLayout HorizontalOptions="Center" VerticalOptions="Center" Spacing="7">
-                            <Border StrokeShape="RoundRectangle 25" BackgroundColor="#004AAD" HeightRequest="100" WidthRequest="100">
-                                <Image Source="virus.svg" HeightRequest="62" WidthRequest="72" />
-                            </Border>
-                            <Label Text="Doenças" HorizontalTextAlignment="Center" />
-                        </VerticalStackLayout>
-                    </HorizontalStackLayout>
-                    <HorizontalStackLayout Spacing="20">
-                        <Border StrokeShape="RoundRectangle 50" WidthRequest="15" HeightRequest="15">
-                            <Button BackgroundColor="#8EDDDE" />
-                        </Border>
-                        <Border StrokeShape="RoundRectangle 50" WidthRequest="15" HeightRequest="15">
-                            <Button BackgroundColor="#004AAD" />
-                        </Border>
-                        <Border StrokeShape="RoundRectangle 50" WidthRequest="15" HeightRequest="15">
-                            <Button BackgroundColor="#004AAD" />
-                        </Border>
-                        <Border StrokeShape="RoundRectangle 50" WidthRequest="15" HeightRequest="15">
-                            <Button BackgroundColor="#004AAD" />
-                        </Border>
-                        <Border StrokeShape="RoundRectangle 50" WidthRequest="15" HeightRequest="15">
-                            <Button BackgroundColor="#004AAD" />
-                        </Border>
-                        <Border StrokeShape="RoundRectangle 50" WidthRequest="15" HeightRequest="15">
-                            <Button BackgroundColor="#004AAD" />
-                        </Border>
-                        <Border StrokeShape="RoundRectangle 50" WidthRequest="15" HeightRequest="15">
-                            <Button BackgroundColor="#004AAD" />
-                        </Border>
-                        <Border StrokeShape="RoundRectangle 50" WidthRequest="15" HeightRequest="15">
-                            <Button BackgroundColor="#004AAD" />
-                        </Border>
-                        <Border StrokeShape="RoundRectangle 50" WidthRequest="15" HeightRequest="15">
-                            <Button BackgroundColor="#004AAD" />
-                        </Border>
-                        <Border StrokeShape="RoundRectangle 50" WidthRequest="15" HeightRequest="15">
-                            <Button BackgroundColor="#004AAD" />
-                        </Border>
-                    </HorizontalStackLayout>
-                    <VerticalStackLayout Spacing="20">
-                        <Border BackgroundColor="#8EDDDE" StrokeShape="RoundRectangle 25" WidthRequest="333" HeightRequest="162">
-                            <VerticalStackLayout Spacing="11" Padding="15">
-                                <Label FontSize="10" Text="Protocolos Clínicos e Diretrizes Terapêuticas (PCDT)" />
-                                <Label FontSize="9" TextColor="#004AAD" Text="São documentos que estabelecem critérios para o diagnóstico da doença ou do agravo à saúde; o tratamento preconizado, com os medicamentos e  demais produtos apropriados, quando couber; as posologias recomendadas;  os mecanismos de controle clínico; e o acompanhamento e a verificação  dos resultados terapêuticos, a serem seguidos pelos gestores do SUS.  Devem ser baseados em evidência científica e considerar critérios de  eficácia, segurança, efetividade e custo-efetividade das tecnologias  recomendadas." />
-                            </VerticalStackLayout>
-                        </Border>
-                        <Border BackgroundColor="#8EDDDE" StrokeShape="RoundRectangle 25" WidthRequest="333" HeightRequest="162">
-                            <VerticalStackLayout Spacing="11" Padding="15">
-                                <Label FontSize="10" Text="Diretrizes Diagnósticas e Terapêuticas (DDT) em Oncologia" />
-                                <Label FontSize="9" TextColor="#004AAD" Text="Os documentos são baseados em evidência científica que visam nortear as  melhores condutas na área da Oncologia. A principal diferença em relação aos PCDT é que, por conta do sistema diferenciado de financiamento dos  procedimentos e tratamentos em oncologia, este documento não se  restringe às tecnologias incorporadas no SUS, mas sim, ao que pode ser  oferecido a este paciente, considerando o financiamento repassado aos  centros de atenção e a autonomia destes na escolha da melhor opção para  cada situação clínica." />
-                            </VerticalStackLayout>
-                        </Border>
-                        <Border BackgroundColor="#8EDDDE" StrokeShape="RoundRectangle 25" WidthRequest="333" HeightRequest="162">
-                            <VerticalStackLayout Spacing="11" Padding="15">
-                                <Label FontSize="10" Text="Protocolos de Uso" />
-                                <Label FontSize="9" TextColor="#004AAD" Text="São documentos normativos de escopo mais estrito, que estabelecem  critérios, parâmetros e padrões para a utilização de uma tecnologia  específica em determinada doença ou condição." />
-                            </VerticalStackLayout>
-                        </Border>
+                    <Button Text="Limpar Pesquisa" 
+                            FontSize="14" 
+                            TextColor="White" 
+                            BackgroundColor="#004AAD" 
+                            CornerRadius="25" 
+                            HeightRequest="40" 
+                            WidthRequest="150"
+                            Command="{Binding LimparPesquisaCommand}" 
+                            IsVisible="{Binding IsVisibleBotaoLimpar}" />
+
+                    <Label Text="Nada foi encontrado!" 
+                           FontSize="20" 
+                           FontAttributes="Bold" 
+                           TextColor="Black" 
+                           HorizontalTextAlignment="Center"
+                           IsVisible="{Binding IsVisibleResultado}" />
+
+                    <VerticalStackLayout IsVisible="{Binding IsVisible}" Spacing="17">
+                        <CarouselView ItemsSource="{Binding PaginasDeTopicos}"
+                                      HeightRequest="150"
+                                      IndicatorView="indicatorView"
+                                      Loop="False">
+
+                            <CarouselView.ItemTemplate>
+                                <DataTemplate x:DataType="vm:TopicPage">
+
+                                    <HorizontalStackLayout Spacing="15" 
+                                                           HorizontalOptions="Start" 
+                                                           Margin="15,0"
+                                                           VerticalOptions="Center"
+                                                           BindableLayout.ItemsSource="{Binding ItensDaPagina}">
+
+                                        <BindableLayout.ItemTemplate>
+                                            <DataTemplate x:DataType="vm:TopicUiModel">
+
+                                                <VerticalStackLayout Spacing="7" WidthRequest="100">
+
+                                                    <Border StrokeShape="RoundRectangle 25"
+                                                            BackgroundColor="{Binding BackgroundColor}"
+                                                            HeightRequest="100"
+                                                            WidthRequest="100">
+
+                                                        <Border.GestureRecognizers>
+                                                            <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type vm:HomeViewModel}}, Path=SelecionarTopicoCommand}"
+                                                          CommandParameter="{Binding .}" />
+                                                        </Border.GestureRecognizers>
+
+                                                        <Image Source="{Binding IconSource}" 
+                                                               HeightRequest="50" 
+                                                               WidthRequest="50"
+                                                               HorizontalOptions="Center"
+                                                               VerticalOptions="Center"/>
+                                                    </Border>
+
+                                                    <Label Text="{Binding TopicData.Name}" 
+                                                           TextColor="Black"
+                                                           FontSize="12"
+                                                           HorizontalTextAlignment="Center" />
+                                                </VerticalStackLayout>
+
+                                            </DataTemplate>
+                                        </BindableLayout.ItemTemplate>
+                                    </HorizontalStackLayout>
+                                </DataTemplate>
+                            </CarouselView.ItemTemplate>
+                        </CarouselView>
+
+                        <IndicatorView x:Name="indicatorView"
+                                       IndicatorColor="#004AAD"
+                                       SelectedIndicatorColor="#8EDDDE"
+                                       HorizontalOptions="Center"
+                                       Margin="0,10,0,0" />
+                    </VerticalStackLayout>
+
+                    <VerticalStackLayout Spacing="20" IsVisible="{Binding IsVisibleArtigos}"
+                     BindableLayout.ItemsSource="{Binding ArtigosExibidos}">
+
+                        <BindableLayout.ItemTemplate>
+                            <DataTemplate x:DataType="core:Article">
+
+                                <Border BackgroundColor="#8EDDDE" 
+                                        StrokeShape="RoundRectangle 25" 
+                                        WidthRequest="333" 
+                                        Margin="0,0,0,10">
+                                    <VerticalStackLayout Spacing="11" Padding="15">
+
+                                        <Label FontSize="12" 
+                                               FontAttributes="Bold"
+                                               Text="{Binding Title}" 
+                                               LineBreakMode="TailTruncation"/>
+
+                                        <Label FontSize="10" 
+                                               TextColor="#004AAD" 
+                                               Text="{Binding ContentBody}" 
+                                               LineBreakMode="WordWrap" />
+                                    </VerticalStackLayout>
+                                </Border>
+
+                            </DataTemplate>
+                        </BindableLayout.ItemTemplate>
+
                     </VerticalStackLayout>
                 </VerticalStackLayout>
             </VerticalStackLayout>
+            <Grid BackgroundColor="#80000000" IsVisible="{Binding IsLoading}" HorizontalOptions="Fill" VerticalOptions="Fill">
+                <ActivityIndicator IsRunning="{Binding IsLoading}" Color="White" VerticalOptions="Center" HorizontalOptions="Center"/>
+            </Grid>
         </Grid>
     </ScrollView>
 </ContentPage>
