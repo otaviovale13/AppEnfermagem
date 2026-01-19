@@ -3,12 +3,19 @@
     x:Class="AppEnfermagem.AppShell"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-    xmlns:local="clr-namespace:AppEnfermagem"
+    xmlns:local="clr-namespace:AppEnfermagem.Views"
     Title="AppEnfermagem">
+
+    <ShellContent
+        Title="Apresentação"
+        ContentTemplate="{DataTemplate local:ApresentacaoPage}"
+        Route="ApresentacaoPage" />
 
     <ShellContent
         Title="Home"
         ContentTemplate="{DataTemplate local:MainPage}"
         Route="MainPage" />
 
+    
 </Shell>
+

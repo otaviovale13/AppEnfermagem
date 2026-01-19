@@ -60,6 +60,15 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <AndroidResource Remove="Moldes\**" />
+	  <Compile Remove="Moldes\**" />
+	  <EmbeddedResource Remove="Moldes\**" />
+	  <MauiCss Remove="Moldes\**" />
+	  <MauiXaml Remove="Moldes\**" />
+	  <None Remove="Moldes\**" />
+	</ItemGroup>
+
+	<ItemGroup>
 		<PackageReference Include="CommunityToolkit.Maui" Version="12.3.0" />
 		<PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.0" />
 		<PackageReference Include="Microsoft.Extensions.Http" Version="10.0.1" />
@@ -68,7 +77,9 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <Folder Include="Moldes\" />
+	  <MauiXaml Update="Views\ApresentacaoPage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
 	</ItemGroup>
 
 </Project>

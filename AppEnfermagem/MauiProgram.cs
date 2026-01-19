@@ -1,5 +1,4 @@
 ﻿using AppEnfermagem.Services;
-using AppEnfermagem.ViewModels;
 using AppEnfermagem.Views;
 using CommunityToolkit.Maui;
 using Microsoft.Extensions.Logging;
@@ -31,10 +30,10 @@ namespace AppEnfermagem
                 client.BaseAddress = new Uri(baseUrl);
             });
 
-            builder.Services.AddSingleton<AppShellViewModel>();
+          
             builder.Services.AddSingleton<AppShell>();
 
-            builder.Services.AddTransient<MainViewModel>();
+           
             builder.Services.AddTransient<MainPage>();
 
 #if DEBUG
