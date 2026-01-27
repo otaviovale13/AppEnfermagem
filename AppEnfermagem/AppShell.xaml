@@ -7,17 +7,15 @@
     Shell.FlyoutBehavior="Disabled"
     Shell.NavBarIsVisible="False">
 
+    <ShellContent
+     Title="Home"
+     ContentTemplate="{DataTemplate local:InicioPage}"
+     Route="InicioPage"/>
 
     <ShellContent
         Title="Apresentação"
         ContentTemplate="{DataTemplate local:ApresentacaoPage}"
         Route="ApresentacaoPage" />
-
-    <ShellContent
-        Title="Home"
-        ContentTemplate="{DataTemplate local:MainPage}"
-        Route="MainPage" />
-
     
 </Shell>
 

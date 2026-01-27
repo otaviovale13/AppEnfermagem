@@ -1,18 +1,17 @@
-﻿using Microsoft.Maui.Controls;
+using Microsoft.Maui.Controls;
 
 namespace AppEnfermagem.Views
 {
-    public partial class MainPage : ContentPage
+    public partial class InicioPage : ContentPage
     {
-        public MainPage()
+        public InicioPage ()
         {
             InitializeComponent();
         }
 
         private async void OnConhecerClicked(object sender, EventArgs e)
         {
-  
-            await Shell.Current.GoToAsync("ApresentacaoPage");
+            await Shell.Current.GoToAsync("//ApresentacaoPage");
         }
     }
 }

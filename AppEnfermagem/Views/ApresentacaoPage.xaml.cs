@@ -12,12 +12,12 @@ namespace AppEnfermagem.Views
 
         private async void SaibaMais_Clicked(object sender, EventArgs e)
         {
-            await Shell.Current.GoToAsync("//MainPage");
+            await Shell.Current.GoToAsync("//InicioPage");
         }
         
         private async void BtnComecar_Clicked(object sender, EventArgs e)
         {
-            await Shell.Current.GoToAsync("//MainPage");
+            await Shell.Current.GoToAsync("//InicioPage");
         }
     }
 }

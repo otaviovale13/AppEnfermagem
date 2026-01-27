@@ -34,7 +34,7 @@ namespace AppEnfermagem
             builder.Services.AddSingleton<AppShell>();
 
            
-            builder.Services.AddTransient<MainPage>();
+            builder.Services.AddTransient<InicioPage>();
 
 #if DEBUG
             builder.Logging.AddDebug();

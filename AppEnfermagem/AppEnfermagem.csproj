@@ -77,6 +77,12 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <Compile Update="Views\InicioPage.xaml.cs">
+	    <DependentUpon>InicioPage.xaml</DependentUpon>
+	  </Compile>
+	</ItemGroup>
+
+	<ItemGroup>
 	  <MauiXaml Update="Views\ApresentacaoPage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
