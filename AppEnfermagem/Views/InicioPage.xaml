@@ -5,7 +5,8 @@
              BackgroundColor="White"
              NavigationPage.HasNavigationBar="False">
 
-    <ScrollView>
+    <ScrollView VerticalScrollBarVisibility="Never"
+                HorizontalScrollBarVisibility="Never">
         <Grid RowDefinitions="Auto,*"
               Padding="0">
 
