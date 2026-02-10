@@ -31,11 +31,25 @@ namespace AppEnfermagem
                 client.BaseAddress = new Uri(baseUrl);
             });
 
+            builder.Services.AddHttpClient<ILoginService, LoginService>(client =>
+            {
+                client.BaseAddress = new Uri(baseUrl);
+            });
+
             builder.Services.AddSingleton<AppShellViewModel>();
             builder.Services.AddSingleton<AppShell>();
 
-            builder.Services.AddTransient<MainViewModel>();
-            builder.Services.AddTransient<MainPage>();
+            builder.Services.AddTransient<HomeViewModel>();
+            builder.Services.AddTransient<HomePage>();
+
+            builder.Services.AddTransient<LoginViewModel>();
+            builder.Services.AddTransient<LoginPage>();
+
+            builder.Services.AddTransient<LoadingViewModel>();
+            builder.Services.AddTransient<LoadingPage>();
+
+            builder.Services.AddTransient<AdmViewModel>();
+            builder.Services.AddTransient<AdmPage>();
 
 #if DEBUG
             builder.Logging.AddDebug();
