@@ -61,7 +61,7 @@ public partial class LoginViewModel : ObservableObject
                 await Shell.Current.DisplayAlert("Sucesso", $"Bem-vindo, {Usuario}!", "OK");
                 LimparCampos();
 
-                await Shell.Current.GoToAsync($"//{nameof(AdmPage)}");
+                await Shell.Current.GoToAsync($"//{nameof(HomePage)}");
             }
             catch (Exception ex)
             {

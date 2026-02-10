@@ -51,6 +51,9 @@ namespace AppEnfermagem
             builder.Services.AddTransient<AdmViewModel>();
             builder.Services.AddTransient<AdmPage>();
 
+            builder.Services.AddTransient<FormularioArtigoPage>();
+            builder.Services.AddTransient<FormularioArtigoViewModel>();
+
 #if DEBUG
             builder.Logging.AddDebug();
 #endif

@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="AppEnfermagem.Views.FormularioArtigoPage"
+             xmlns:vm="clr-namespace:AppEnfermagem.ViewModels"
+             x:DataType="vm:FormularioArtigoViewModel"
+             Title="{Binding TituloPagina}">
+
+    <ScrollView Padding="20">
+        <VerticalStackLayout Spacing="15">
+            <Label Text="Título do Artigo" FontAttributes="Bold" />
+            <Border Stroke="#004AAD" StrokeShape="RoundRectangle 10" Padding="5">
+                <Entry Text="{Binding Artigo.Title}" Placeholder="Ex: Protocolo de Higienização" />
+            </Border>
+
+            <Label Text="Categoria (Tópico)" FontAttributes="Bold" />
+            <Border Stroke="#004AAD" StrokeShape="RoundRectangle 10">
+                <Picker ItemsSource="{Binding ListaTopicos}" 
+                        ItemDisplayBinding="{Binding Name}"
+                        SelectedItem="{Binding TopicoSelecionado}"
+                        Title="Selecione o tópico" />
+            </Border>
+
+            <Label Text="Conteúdo" FontAttributes="Bold" />
+            <Border Stroke="#004AAD" StrokeShape="RoundRectangle 10" HeightRequest="300">
+                <Editor Text="{Binding Artigo.ContentBody}" 
+                        Placeholder="Digite o conteúdo detalhado aqui..."
+                        AutoSize="Disabled" />
+            </Border>
+
+            <Button Text="Salvar Alterações" 
+                    BackgroundColor="#004AAD" 
+                    TextColor="White"
+                    CornerRadius="25"
+                    HeightRequest="50"
+                    Margin="0,20"
+                    Command="{Binding SalvarCommand}" />
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>

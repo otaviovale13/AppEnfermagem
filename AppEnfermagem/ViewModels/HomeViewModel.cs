@@ -220,8 +220,66 @@ public partial class HomeViewModel : ObservableObject
     }
 
     [RelayCommand]
-    public async Task IrLogin()
+private async Task AdminIconClick()
+{
+    if (IsAdmin)
     {
-        await Shell.Current.GoToAsync($"//{nameof(LoginPage)}");
+        bool sair = await Shell.Current.DisplayAlert("Logout", "Deseja sair do modo administrador?", "Sim", "Não");
+        if (sair)
+        {
+            Preferences.Clear();
+            IsAdmin = false;
+            await InicializarTela();
+        }
+    }
+    else
+    {
+            await Shell.Current.GoToAsync($"//{nameof(LoginPage)}");
+        }
+}
+
+    [ObservableProperty]
+    private bool isAdmin;
+
+    // Método para verificar se o usuário está logado como admin
+    public void VerificarStatusAdmin()
+    {
+        // Verifica se existe um ID de usuário salvo nas Preferences
+        var userId = Preferences.Get("UserId", null);
+        IsAdmin = !string.IsNullOrEmpty(userId);
+    }
+
+    [RelayCommand]
+    public async Task AdicionarArtigo()
+    {
+        // Navega sem passar objeto (Novo Artigo)
+        await Shell.Current.GoToAsync(nameof(FormularioArtigoPage));
+    }
+
+    [RelayCommand]
+    public async Task EditarArtigo(Article artigo)
+    {
+        // Navega passando o artigo selecionado
+        var parametros = new Dictionary<string, object> { { "ArtigoObjeto", artigo } };
+        await Shell.Current.GoToAsync(nameof(FormularioArtigoPage), parametros);
+    }
+
+    [RelayCommand]
+    public async Task DeletarArtigo(Article artigo)
+    {
+        if (artigo == null) return;
+
+        bool confirmar = await App.Current.MainPage.DisplayAlert("Confirmar",
+            $"Deseja excluir o artigo '{artigo.Title}'?", "Sim", "Não");
+
+        if (confirmar)
+        {
+            // 1. Chamar o serviço para deletar no banco/API
+            var sucesso = await _contentService.DeletarArtigoAsync(artigo.ArticleID);
+
+            // 2. Remover da lista visual
+            ArtigosExibidos.Remove(artigo);
+            _todosArtigosDaApi.Remove(artigo);
+        }
     }
 }

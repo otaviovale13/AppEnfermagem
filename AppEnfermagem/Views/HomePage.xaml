@@ -14,11 +14,16 @@
             <VerticalStackLayout Margin="20" Spacing="50">
                 <HorizontalStackLayout Spacing="20">
                     <Image Source="bars_png.png" HorizontalOptions="Start" />
-                    <Image Source="admin_png.png" HorizontalOptions="Start">
+                    <Image Source="admin_png.png">
                         <Image.GestureRecognizers>
-                            <TapGestureRecognizer Command="{Binding IrLoginCommand}" />
+                            <TapGestureRecognizer Command="{Binding AdminIconClickCommand}" />
                         </Image.GestureRecognizers>
                     </Image>
+                    <Image Source="admin_png.png">
+    <Image.GestureRecognizers>
+        <TapGestureRecognizer Command="{Binding AdminIconClickCommand}" />
+    </Image.GestureRecognizers>
+</Image>
                 </HorizontalStackLayout>
 
                 <VerticalStackLayout HorizontalOptions="Center" VerticalOptions="Center" Spacing="30">
@@ -120,29 +125,52 @@
 
                         <BindableLayout.ItemTemplate>
                             <DataTemplate x:DataType="core:Article">
-
                                 <Border BackgroundColor="#8EDDDE" 
-                                        StrokeShape="RoundRectangle 25" 
-                                        WidthRequest="333" 
-                                        Margin="0,0,0,10">
+                    StrokeShape="RoundRectangle 25" 
+                    WidthRequest="333" 
+                    Margin="0,0,0,10">
                                     <VerticalStackLayout Spacing="11" Padding="15">
 
-                                        <Label FontSize="12" 
-                                               FontAttributes="Bold"
-                                               Text="{Binding Title}" 
-                                               LineBreakMode="TailTruncation"/>
+                                        <Grid ColumnDefinitions="*, Auto">
+                                            <Label FontSize="12" 
+                               FontAttributes="Bold"
+                               Text="{Binding Title}" 
+                               LineBreakMode="TailTruncation"
+                               VerticalOptions="Center"/>
+
+                                            <HorizontalStackLayout Grid.Column="1" Spacing="10" IsVisible="{Binding Source={RelativeSource AncestorType={x:Type vm:HomeViewModel}}, Path=IsAdmin}">
+                                                <ImageButton Source="pencil_icon.png" 
+                                         HeightRequest="20" WidthRequest="20"
+                                         Command="{Binding Source={RelativeSource AncestorType={x:Type vm:HomeViewModel}}, Path=EditarArtigoCommand}"
+                                         CommandParameter="{Binding .}"/>
+                                                <ImageButton Source="trash_icon.png" 
+                                         HeightRequest="20" WidthRequest="20"
+                                         Command="{Binding Source={RelativeSource AncestorType={x:Type vm:HomeViewModel}}, Path=DeletarArtigoCommand}"
+                                         CommandParameter="{Binding .}"/>
+                                            </HorizontalStackLayout>
+                                        </Grid>
 
                                         <Label FontSize="10" 
-                                               TextColor="#004AAD" 
-                                               Text="{Binding ContentBody}" 
-                                               LineBreakMode="WordWrap" />
+                           TextColor="#004AAD" 
+                           Text="{Binding ContentBody}" 
+                           LineBreakMode="WordWrap" />
                                     </VerticalStackLayout>
                                 </Border>
-
                             </DataTemplate>
                         </BindableLayout.ItemTemplate>
-
                     </VerticalStackLayout>
+
+                    <Button Text="Adicionar"
+        BackgroundColor="#004AAD"
+        TextColor="White"
+        FontSize="18"
+        FontAttributes="Bold"
+        CornerRadius="25"
+        HeightRequest="50"
+        WidthRequest="250"
+        Margin="0,20,0,40"
+        IsVisible="{Binding IsAdmin}"
+        Command="{Binding AdicionarArtigoCommand}" />
                 </VerticalStackLayout>
             </VerticalStackLayout>
             <Grid BackgroundColor="#80000000" IsVisible="{Binding IsLoading}" HorizontalOptions="Fill" VerticalOptions="Fill">
