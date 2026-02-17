@@ -11,7 +11,7 @@
 
     <ScrollView>
         <Grid>
-            <VerticalStackLayout Margin="20" Spacing="50">
+            <VerticalStackLayout Margin="20" Spacing="40">
                 <HorizontalStackLayout Spacing="20">
                     <Image Source="bars_png.png" HorizontalOptions="Start" />
                     <Image Source="admin_png.png">
@@ -19,160 +19,81 @@
                             <TapGestureRecognizer Command="{Binding AdminIconClickCommand}" />
                         </Image.GestureRecognizers>
                     </Image>
-                    <Image Source="admin_png.png">
-    <Image.GestureRecognizers>
-        <TapGestureRecognizer Command="{Binding AdminIconClickCommand}" />
-    </Image.GestureRecognizers>
-</Image>
                 </HorizontalStackLayout>
 
-                <VerticalStackLayout HorizontalOptions="Center" VerticalOptions="Center" Spacing="30">
+                <VerticalStackLayout Spacing="25">
                     <Border Stroke="#004AAD" StrokeThickness="3" StrokeShape="RoundRectangle 35" BackgroundColor="White" HeightRequest="46" WidthRequest="333">
                         <Grid ColumnDefinitions="*, Auto">
-                            <Entry Text="{Binding Input}" Grid.Column="0" Placeholder="Pesquise mais artigos..." PlaceholderColor="Black" TextColor="Black" FontSize="16" VerticalOptions="Center"  Margin="15,0,10,0" BackgroundColor="Transparent" />
-                            <Border Grid.Column="1" 
-                                    StrokeShape="RoundRectangle 35" 
-                                    BackgroundColor="#004AAD" 
-                                    HeightRequest="46" 
-                                    WidthRequest="46" 
-                                    Padding="12">
-
+                            <Entry Text="{Binding Input}" Grid.Column="0" Placeholder="Pesquise mais artigos..." PlaceholderColor="Black" TextColor="Black" FontSize="16" VerticalOptions="Center" Margin="15,0,10,0" BackgroundColor="Transparent" />
+                            <Border Grid.Column="1" StrokeShape="RoundRectangle 35" BackgroundColor="#004AAD" HeightRequest="46" WidthRequest="46" Padding="12">
                                 <Border.GestureRecognizers>
                                     <TapGestureRecognizer Command="{Binding PesquisarCommand}" />
                                 </Border.GestureRecognizers>
-
                                 <Image Source="search_png.png" />
                             </Border>
                         </Grid>
                     </Border>
 
-                    <Button Text="Limpar Pesquisa" 
-                            FontSize="14" 
-                            TextColor="White" 
-                            BackgroundColor="#004AAD" 
-                            CornerRadius="25" 
-                            HeightRequest="40" 
-                            WidthRequest="150"
-                            Command="{Binding LimparPesquisaCommand}" 
-                            IsVisible="{Binding IsVisibleBotaoLimpar}" />
+                    <Button Text="Limpar Pesquisa" FontSize="14" TextColor="White" BackgroundColor="#004AAD" CornerRadius="25" HeightRequest="40" WidthRequest="150" HorizontalOptions="Center"
+                            Command="{Binding LimparPesquisaCommand}" IsVisible="{Binding IsVisibleBotaoLimpar}" />
 
-                    <Label Text="Nada foi encontrado!" 
-                           FontSize="20" 
-                           FontAttributes="Bold" 
-                           TextColor="Black" 
-                           HorizontalTextAlignment="Center"
-                           IsVisible="{Binding IsVisibleResultado}" />
-
-                    <VerticalStackLayout IsVisible="{Binding IsVisible}" Spacing="17">
-                        <CarouselView ItemsSource="{Binding PaginasDeTopicos}"
-                                      HeightRequest="150"
-                                      IndicatorView="indicatorView"
-                                      Loop="False">
-
-                            <CarouselView.ItemTemplate>
-                                <DataTemplate x:DataType="vm:TopicPage">
-
-                                    <HorizontalStackLayout Spacing="15" 
-                                                           HorizontalOptions="Start" 
-                                                           Margin="15,0"
-                                                           VerticalOptions="Center"
-                                                           BindableLayout.ItemsSource="{Binding ItensDaPagina}">
-
-                                        <BindableLayout.ItemTemplate>
-                                            <DataTemplate x:DataType="vm:TopicUiModel">
-
-                                                <VerticalStackLayout Spacing="7" WidthRequest="100">
-
-                                                    <Border StrokeShape="RoundRectangle 25"
-                                                            BackgroundColor="{Binding BackgroundColor}"
-                                                            HeightRequest="100"
-                                                            WidthRequest="100">
-
-                                                        <Border.GestureRecognizers>
-                                                            <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type vm:HomeViewModel}}, Path=SelecionarTopicoCommand}"
-                                                          CommandParameter="{Binding .}" />
-                                                        </Border.GestureRecognizers>
-
-                                                        <Image Source="{Binding IconSource}" 
-                                                               HeightRequest="50" 
-                                                               WidthRequest="50"
-                                                               HorizontalOptions="Center"
-                                                               VerticalOptions="Center"/>
-                                                    </Border>
-
-                                                    <Label Text="{Binding TopicData.Name}" 
-                                                           TextColor="Black"
-                                                           FontSize="12"
-                                                           HorizontalTextAlignment="Center" />
-                                                </VerticalStackLayout>
-
-                                            </DataTemplate>
-                                        </BindableLayout.ItemTemplate>
-                                    </HorizontalStackLayout>
-                                </DataTemplate>
-                            </CarouselView.ItemTemplate>
-                        </CarouselView>
-
-                        <IndicatorView x:Name="indicatorView"
-                                       IndicatorColor="#004AAD"
-                                       SelectedIndicatorColor="#8EDDDE"
-                                       HorizontalOptions="Center"
-                                       Margin="0,10,0,0" />
-                    </VerticalStackLayout>
-
-                    <VerticalStackLayout Spacing="20" IsVisible="{Binding IsVisibleArtigos}"
-                     BindableLayout.ItemsSource="{Binding ArtigosExibidos}">
-
-                        <BindableLayout.ItemTemplate>
-                            <DataTemplate x:DataType="core:Article">
-                                <Border BackgroundColor="#8EDDDE" 
-                    StrokeShape="RoundRectangle 25" 
-                    WidthRequest="333" 
-                    Margin="0,0,0,10">
-                                    <VerticalStackLayout Spacing="11" Padding="15">
-
-                                        <Grid ColumnDefinitions="*, Auto">
-                                            <Label FontSize="12" 
-                               FontAttributes="Bold"
-                               Text="{Binding Title}" 
-                               LineBreakMode="TailTruncation"
-                               VerticalOptions="Center"/>
-
-                                            <HorizontalStackLayout Grid.Column="1" Spacing="10" IsVisible="{Binding Source={RelativeSource AncestorType={x:Type vm:HomeViewModel}}, Path=IsAdmin}">
-                                                <ImageButton Source="pencil_icon.png" 
-                                         HeightRequest="20" WidthRequest="20"
-                                         Command="{Binding Source={RelativeSource AncestorType={x:Type vm:HomeViewModel}}, Path=EditarArtigoCommand}"
-                                         CommandParameter="{Binding .}"/>
-                                                <ImageButton Source="trash_icon.png" 
-                                         HeightRequest="20" WidthRequest="20"
-                                         Command="{Binding Source={RelativeSource AncestorType={x:Type vm:HomeViewModel}}, Path=DeletarArtigoCommand}"
-                                         CommandParameter="{Binding .}"/>
-                                            </HorizontalStackLayout>
-                                        </Grid>
-
-                                        <Label FontSize="10" 
-                           TextColor="#004AAD" 
-                           Text="{Binding ContentBody}" 
-                           LineBreakMode="WordWrap" />
-                                    </VerticalStackLayout>
-                                </Border>
-                            </DataTemplate>
-                        </BindableLayout.ItemTemplate>
-                    </VerticalStackLayout>
-
-                    <Button Text="Adicionar"
-        BackgroundColor="#004AAD"
-        TextColor="White"
-        FontSize="18"
-        FontAttributes="Bold"
-        CornerRadius="25"
-        HeightRequest="50"
-        WidthRequest="250"
-        Margin="0,20,0,40"
-        IsVisible="{Binding IsAdmin}"
-        Command="{Binding AdicionarArtigoCommand}" />
+                    <Label Text="Nada foi encontrado!" FontSize="20" FontAttributes="Bold" TextColor="Black" HorizontalTextAlignment="Center" IsVisible="{Binding IsVisibleResultado}" />
                 </VerticalStackLayout>
+
+                <VerticalStackLayout IsVisible="{Binding IsVisible}" Spacing="10">
+                    <Grid ColumnDefinitions="*, Auto" Margin="10,0">
+                        <Label Text="Categorias" FontSize="18" FontAttributes="Bold" TextColor="#004AAD" VerticalOptions="Center" />
+                        <ImageButton Grid.Column="1" Source="plus_icon.png" HeightRequest="32" WidthRequest="32" BackgroundColor="#8EDDDE" CornerRadius="16" Padding="6"
+                                     IsVisible="{Binding IsAdmin}" Command="{Binding IrParaCriarTopicoCommand}" />
+                    </Grid>
+
+                    <CarouselView ItemsSource="{Binding PaginasDeTopicos}" HeightRequest="150" IndicatorView="indicatorView" Loop="False">
+                        <CarouselView.ItemTemplate>
+                            <DataTemplate x:DataType="vm:TopicPage">
+                                <HorizontalStackLayout Spacing="15" HorizontalOptions="Start" Margin="15,0" VerticalOptions="Center" BindableLayout.ItemsSource="{Binding ItensDaPagina}">
+                                    <BindableLayout.ItemTemplate>
+                                        <DataTemplate x:DataType="vm:TopicUiModel">
+                                            <VerticalStackLayout Spacing="7" WidthRequest="100">
+                                                <Border StrokeShape="RoundRectangle 25" BackgroundColor="{Binding BackgroundColor}" HeightRequest="100" WidthRequest="100">
+                                                    <Border.GestureRecognizers>
+                                                        <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type vm:HomeViewModel}}, Path=SelecionarTopicoCommand}" CommandParameter="{Binding .}" />
+                                                    </Border.GestureRecognizers>
+                                                    <Image Source="{Binding IconSource}" HeightRequest="50" WidthRequest="50" HorizontalOptions="Center" VerticalOptions="Center"/>
+                                                </Border>
+                                                <Label Text="{Binding TopicData.Name}" TextColor="Black" FontSize="12" HorizontalTextAlignment="Center" />
+                                            </VerticalStackLayout>
+                                        </DataTemplate>
+                                    </BindableLayout.ItemTemplate>
+                                </HorizontalStackLayout>
+                            </DataTemplate>
+                        </CarouselView.ItemTemplate>
+                    </CarouselView>
+                    <IndicatorView x:Name="indicatorView" IndicatorColor="#004AAD" SelectedIndicatorColor="#8EDDDE" HorizontalOptions="Center" />
+                </VerticalStackLayout>
+
+                <VerticalStackLayout Spacing="20" IsVisible="{Binding IsVisibleArtigos}" BindableLayout.ItemsSource="{Binding ArtigosExibidos}">
+                    <BindableLayout.ItemTemplate>
+                        <DataTemplate x:DataType="core:Article">
+                            <Border BackgroundColor="#8EDDDE" StrokeShape="RoundRectangle 25" WidthRequest="333" Margin="0,0,0,10">
+                                <VerticalStackLayout Spacing="11" Padding="15">
+                                    <Grid ColumnDefinitions="*, Auto">
+                                        <Label FontSize="12" FontAttributes="Bold" Text="{Binding Title}" LineBreakMode="TailTruncation" VerticalOptions="Center"/>
+                                        <HorizontalStackLayout Grid.Column="1" Spacing="10" IsVisible="{Binding Source={RelativeSource AncestorType={x:Type vm:HomeViewModel}}, Path=IsAdmin}">
+                                            <ImageButton Source="pencil_icon.png" HeightRequest="20" WidthRequest="20" Command="{Binding Source={RelativeSource AncestorType={x:Type vm:HomeViewModel}}, Path=EditarArtigoCommand}" CommandParameter="{Binding .}"/>
+                                            <ImageButton Source="trash_icon.png" HeightRequest="20" WidthRequest="20" Command="{Binding Source={RelativeSource AncestorType={x:Type vm:HomeViewModel}}, Path=DeletarArtigoCommand}" CommandParameter="{Binding .}"/>
+                                        </HorizontalStackLayout>
+                                    </Grid>
+                                    <Label FontSize="10" TextColor="#004AAD" Text="{Binding ContentBody}" LineBreakMode="WordWrap" />
+                                </VerticalStackLayout>
+                            </Border>
+                        </DataTemplate>
+                    </BindableLayout.ItemTemplate>
+                </VerticalStackLayout>
+
+                <Button Text="Novo Artigo" BackgroundColor="#004AAD" TextColor="White" FontSize="18" FontAttributes="Bold" CornerRadius="25" HeightRequest="50" WidthRequest="250" Margin="0,20,0,40"
+                        IsVisible="{Binding IsAdmin}" Command="{Binding AdicionarArtigoCommand}" />
             </VerticalStackLayout>
+
             <Grid BackgroundColor="#80000000" IsVisible="{Binding IsLoading}" HorizontalOptions="Fill" VerticalOptions="Fill">
                 <ActivityIndicator IsRunning="{Binding IsLoading}" Color="White" VerticalOptions="Center" HorizontalOptions="Center"/>
             </Grid>

@@ -12,61 +12,39 @@ public interface IContentService
     Task<bool> CriarArtigoAsync(Article artigo);
     Task<bool> AtualizarArtigoAsync(Article artigo);
     Task<bool> DeletarArtigoAsync(long articleId);
+    Task<bool> CriarTopicoAsync(Topic topico);
 }
 
 public class ContentService : IContentService
 {
     private readonly HttpClient _httpClient;
+    private const string BaseUrl = "api/Content";
 
-    private const string BaseUrl = "https://apienfermagem.runasp.net/api/Content";
+    public ContentService(HttpClient httpClient) => _httpClient = httpClient;
 
-    public ContentService(HttpClient httpClient)
-    {
-        _httpClient = httpClient;
-    }
-
-    public async Task<ArtigoItem?> ObterTopicosAsync()
-    {
-        try
-        {
-            return await _httpClient.GetFromJsonAsync<ArtigoItem>($"{BaseUrl}");
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine($"Erro ao buscar artigos: {ex.Message}");
-            return null;
-        }
-    }
+    public async Task<ArtigoItem?> ObterTopicosAsync() => await _httpClient.GetFromJsonAsync<ArtigoItem>(BaseUrl);
 
     public async Task<bool> CriarArtigoAsync(Article artigo)
     {
-        try
-        {
-            // Envia para: https://apienfermagem.runasp.net/api/Content
-            var response = await _httpClient.PostAsJsonAsync(BaseUrl, artigo);
-            return response.IsSuccessStatusCode;
-        }
-        catch { return false; }
+        var resp = await _httpClient.PostAsJsonAsync(BaseUrl, artigo);
+        return resp.IsSuccessStatusCode;
     }
 
     public async Task<bool> AtualizarArtigoAsync(Article artigo)
     {
-        try
-        {
-            // Geralmente APIs esperam o ID na URL para o PUT: api/Content/5
-            var response = await _httpClient.PutAsJsonAsync($"{BaseUrl}/{artigo.ArticleID}", artigo);
-            return response.IsSuccessStatusCode;
-        }
-        catch { return false; }
+        var resp = await _httpClient.PutAsJsonAsync($"{BaseUrl}/{artigo.ArticleID}", artigo);
+        return resp.IsSuccessStatusCode;
     }
 
-    public async Task<bool> DeletarArtigoAsync(long articleId)
+    public async Task<bool> DeletarArtigoAsync(long id)
     {
-        try
-        {
-            var response = await _httpClient.DeleteAsync($"{BaseUrl}/{articleId}");
-            return response.IsSuccessStatusCode;
-        }
-        catch { return false; }
+        var resp = await _httpClient.DeleteAsync($"{BaseUrl}/{id}");
+        return resp.IsSuccessStatusCode;
+    }
+
+    public async Task<bool> CriarTopicoAsync(Topic topico)
+    {
+        var resp = await _httpClient.PostAsJsonAsync($"{BaseUrl}/topico", topico);
+        return resp.IsSuccessStatusCode;
     }
 }

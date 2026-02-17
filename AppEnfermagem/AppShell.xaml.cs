@@ -9,6 +9,7 @@ namespace AppEnfermagem
             InitializeComponent();
 
             Routing.RegisterRoute(nameof(FormularioArtigoPage), typeof(FormularioArtigoPage));
+            Routing.RegisterRoute(nameof(FormularioTopicoPage), typeof(FormularioTopicoPage));
         }
 
         // Add any additional methods or properties for AppShell here

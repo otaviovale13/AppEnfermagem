@@ -20,250 +20,127 @@ public class TopicPage
 public partial class HomeViewModel : ObservableObject
 {
     private readonly IContentService _contentService;
-
-    // Lista para o Carrossel
     public ObservableCollection<TopicPage> PaginasDeTopicos { get; } = new();
-
-    // 1. NOVA PROPRIEDADE: Lista de artigos que aparece na tela (Filtrada)
     public ObservableCollection<Article> ArtigosExibidos { get; } = new();
-
     private List<TopicUiModel> _todosTopicos = new();
-
-    // 2. NOVA LISTA PRIVADA: Cache de TODOS os artigos vindos da API
     private List<Article> _todosArtigosDaApi = new();
-
-    [ObservableProperty] private bool isLoading;
-
-    [ObservableProperty] private bool isVisible = true;
-
-    [ObservableProperty] private bool isVisibleArtigos = true;
-
-    [ObservableProperty] private bool isVisibleResultado = false;
-
-    [ObservableProperty] private bool isVisibleBotaoLimpar = false;
-
-    [ObservableProperty] private string input;
-
-    // Variável para lembrar qual tópico está pintado de Ciano/Selecionado atualmente
     private TopicUiModel _topicoSelecionadoAtual;
 
-    public HomeViewModel(IContentService contentService)
-    {
-        _contentService = contentService;
-    }
+    [ObservableProperty] private bool isLoading;
+    [ObservableProperty] private bool isVisible = true;
+    [ObservableProperty] private bool isVisibleArtigos = true;
+    [ObservableProperty] private bool isVisibleResultado = false;
+    [ObservableProperty] private bool isVisibleBotaoLimpar = false;
+    [ObservableProperty] private string input;
+    [ObservableProperty] private bool isAdmin;
+
+    public HomeViewModel(IContentService contentService) => _contentService = contentService;
+
+    public void VerificarStatusAdmin() => IsAdmin = !string.IsNullOrEmpty(Preferences.Get("UserId", null));
 
     [RelayCommand]
     public void SelecionarTopico(TopicUiModel itemSelecionado)
     {
-        // Lógica visual existente (pinta/despinta)
-        foreach (var item in _todosTopicos)
+        if (itemSelecionado == null) return;
+        foreach (var item in _todosTopicos) item.IsSelected = false;
+        itemSelecionado.IsSelected = true;
+        _topicoSelecionadoAtual = itemSelecionado;
+        FiltrarArtigosPorTopico(itemSelecionado.TopicData.TopicID);
+    }
+
+
+    [RelayCommand]
+    public void Pesquisar()
+    {
+        ArtigosExibidos.Clear();
+        var inputPesquisa = Input?.Trim();
+        if (string.IsNullOrEmpty(inputPesquisa))
         {
-            item.IsSelected = false;
+            IsVisible = false;
+            IsVisibleBotaoLimpar = true;
+            foreach (var artigo in _todosArtigosDaApi) ArtigosExibidos.Add(artigo);
         }
-
-        if (itemSelecionado != null)
+        else
         {
-            itemSelecionado.IsSelected = true;
-
-            // --- ADICIONE ISSO AQUI: ---
-            _topicoSelecionadoAtual = itemSelecionado; // Salva na memória
-                                                       // ---------------------------
-
-            FiltrarArtigosPorTopico(itemSelecionado.TopicData.TopicID);
+            var filtrados = _todosArtigosDaApi.Where(a => a.Title != null && a.Title.Contains(inputPesquisa, StringComparison.OrdinalIgnoreCase)).ToList();
+            IsVisible = false;
+            IsVisibleBotaoLimpar = true;
+            IsVisibleArtigos = filtrados.Any();
+            IsVisibleResultado = !filtrados.Any();
+            foreach (var artigo in filtrados) ArtigosExibidos.Add(artigo);
         }
     }
 
     [RelayCommand]
-    public void Pesquisar() // Não precisa ser async, pois não vamos chamar a API
+    public async Task InicializarTela()
     {
-        // 1. Limpa apenas a lista visual
-        ArtigosExibidos.Clear();
-
-        // 2. Pega o texto digitado
-        var inputPesquisa = Input?.Trim();
-
-        // Cenário 1: Campo vazio (Mostra tudo ou reseta o estado)
-        if (string.IsNullOrEmpty(inputPesquisa))
+        try
         {
-            IsVisible = false;      // Esconde o carrossel (se for essa a intenção)
-            IsVisibleBotaoLimpar = true;
-
-            // Restaura todos os artigos que já estavam na memória
-            foreach (var artigo in _todosArtigosDaApi)
+            IsLoading = true;
+            var data = await _contentService.ObterTopicosAsync();
+            PaginasDeTopicos.Clear(); _todosTopicos.Clear(); _todosArtigosDaApi.Clear();
+            if (data != null)
             {
-                ArtigosExibidos.Add(artigo);
-            }
-        }
-        // Cenário 2: Tem texto (Filtra a lista existente)
-        else
-        {
-            // MELHORIA: Usamos .Contains e Ignoramos Maiúsculas/Minúsculas
-            // Antes estava (a.Title == inputPesquisa), que obrigava a digitar exatamente igual.
-            var artigosFiltrados = _todosArtigosDaApi
-                .Where(a => a.Title != null &&
-                            a.Title.Contains(inputPesquisa, StringComparison.OrdinalIgnoreCase))
-                .ToList();
-
-            IsVisible = false;
-
-            if (artigosFiltrados.Count == 0)
-            {
-                // Nenhum resultado encontrado
-                IsVisibleArtigos = false;
-                IsVisibleBotaoLimpar = true;
-                IsVisibleResultado = true; // Mostra mensagem de "Nada encontrado"
-            }
-            else
-            {
-                // Encontrou resultados
-                IsVisibleBotaoLimpar = true;
-                IsVisibleArtigos = true;
-                IsVisibleResultado = false;
-
-                foreach (var artigo in artigosFiltrados)
+                if (data.Artigos != null) _todosArtigosDaApi.AddRange(data.Artigos);
+                if (data.Topicos != null)
                 {
-                    ArtigosExibidos.Add(artigo);
+                    foreach (var t in data.Topicos) _todosTopicos.Add(new TopicUiModel(t));
+                    for (int i = 0; i < _todosTopicos.Count; i += 3) PaginasDeTopicos.Add(new TopicPage(_todosTopicos.Skip(i).Take(3)));
+                    if (_todosTopicos.Any()) SelecionarTopico(_todosTopicos[0]);
                 }
             }
         }
+        finally { IsLoading = false; }
     }
 
     [RelayCommand]
-    public void LimparPesquisa() // Remova o (TopicUiModel itemSelecionado)
+    private async Task AdminIconClick()
+    {
+        if (IsAdmin)
+        {
+            if (await Shell.Current.DisplayAlert("Logout", "Deseja sair do modo administrador?", "Sim", "Não"))
+            {
+                Preferences.Clear(); IsAdmin = false; await InicializarTela();
+            }
+        }
+        else await Shell.Current.GoToAsync($"//{nameof(LoginPage)}");
+    }
+
+    [RelayCommand] public async Task AdicionarArtigo() => await Shell.Current.GoToAsync(nameof(FormularioArtigoPage));
+    [RelayCommand] public async Task IrParaCriarTopico() => await Shell.Current.GoToAsync(nameof(FormularioTopicoPage));
+
+    // 1. Limpar Pesquisa (Certifique-se de que não recebe parâmetros)
+    [RelayCommand]
+    public void LimparPesquisa()
     {
         ArtigosExibidos.Clear();
-        Input = ""; // Limpa o texto do Entry
+        Input = string.Empty;
 
-        // Usa a variável que salvamos na memória
         if (_topicoSelecionadoAtual != null)
         {
             FiltrarArtigosPorTopico(_topicoSelecionadoAtual.TopicData.TopicID);
         }
         else
         {
-            // Caso de segurança (se nada estiver selecionado, restaura tudo)
             foreach (var artigo in _todosArtigosDaApi) ArtigosExibidos.Add(artigo);
         }
 
-        // Restaura a visualização
         IsVisible = true;
         IsVisibleArtigos = true;
         IsVisibleResultado = false;
         IsVisibleBotaoLimpar = false;
     }
 
-    // Método auxiliar para filtrar
-    private void FiltrarArtigosPorTopico(int topicId)
-    {
-        ArtigosExibidos.Clear();
-
-        // Pega apenas os artigos onde o TopicID é igual ao do tópico clicado
-        var artigosFiltrados = _todosArtigosDaApi.Where(a => a.TopicID == topicId).ToList();
-
-        foreach (var artigo in artigosFiltrados)
-        {
-            ArtigosExibidos.Add(artigo);
-        }
-    }
-
-    public async Task InicializarTela()
-    {
-        IsLoading = true;
-
-        try
-        {
-            var artigoItem = await _contentService.ObterTopicosAsync();
-
-            PaginasDeTopicos.Clear();
-            _todosTopicos.Clear();
-            _todosArtigosDaApi.Clear(); // Limpa cache anterior
-
-            if (artigoItem != null)
-            {
-                // 4. Salva todos os artigos recebidos na lista privada
-                if (artigoItem.Artigos != null)
-                {
-                    _todosArtigosDaApi.AddRange(artigoItem.Artigos);
-                }
-
-                if (artigoItem.Topicos != null)
-                {
-                    foreach (var topico in artigoItem.Topicos)
-                    {
-                        _todosTopicos.Add(new TopicUiModel(topico));
-                    }
-
-                    // Lógica de Paginação do Carrossel (Mantida igual)
-                    for (int i = 0; i < _todosTopicos.Count; i += 3)
-                    {
-                        var grupo = _todosTopicos.Skip(i).Take(3);
-                        PaginasDeTopicos.Add(new TopicPage(grupo));
-                    }
-
-                    // Dentro do InicializarTela...
-                    if (_todosTopicos.Count > 0)
-                    {
-                        var primeiroTopico = _todosTopicos[0];
-                        SelecionarTopico(primeiroTopico); // Isso agora vai salvar na variavel _topicoSelecionadoAtual
-                    }
-                }
-            }
-        }
-        catch (Exception ex)
-        {
-            System.Diagnostics.Debug.WriteLine($"Erro: {ex.Message}");
-        }
-        finally
-        {
-            IsLoading = false;
-        }
-    }
-
-    [RelayCommand]
-private async Task AdminIconClick()
-{
-    if (IsAdmin)
-    {
-        bool sair = await Shell.Current.DisplayAlert("Logout", "Deseja sair do modo administrador?", "Sim", "Não");
-        if (sair)
-        {
-            Preferences.Clear();
-            IsAdmin = false;
-            await InicializarTela();
-        }
-    }
-    else
-    {
-            await Shell.Current.GoToAsync($"//{nameof(LoginPage)}");
-        }
-}
-
-    [ObservableProperty]
-    private bool isAdmin;
-
-    // Método para verificar se o usuário está logado como admin
-    public void VerificarStatusAdmin()
-    {
-        // Verifica se existe um ID de usuário salvo nas Preferences
-        var userId = Preferences.Get("UserId", null);
-        IsAdmin = !string.IsNullOrEmpty(userId);
-    }
-
-    [RelayCommand]
-    public async Task AdicionarArtigo()
-    {
-        // Navega sem passar objeto (Novo Artigo)
-        await Shell.Current.GoToAsync(nameof(FormularioArtigoPage));
-    }
-
+    // 2. Editar Artigo (Precisa receber o objeto Article)
     [RelayCommand]
     public async Task EditarArtigo(Article artigo)
     {
-        // Navega passando o artigo selecionado
+        if (artigo == null) return;
         var parametros = new Dictionary<string, object> { { "ArtigoObjeto", artigo } };
         await Shell.Current.GoToAsync(nameof(FormularioArtigoPage), parametros);
     }
 
+    // 3. Deletar Artigo (Precisa receber o objeto Article)
     [RelayCommand]
     public async Task DeletarArtigo(Article artigo)
     {
@@ -274,12 +151,20 @@ private async Task AdminIconClick()
 
         if (confirmar)
         {
-            // 1. Chamar o serviço para deletar no banco/API
             var sucesso = await _contentService.DeletarArtigoAsync(artigo.ArticleID);
-
-            // 2. Remover da lista visual
-            ArtigosExibidos.Remove(artigo);
-            _todosArtigosDaApi.Remove(artigo);
+            if (sucesso)
+            {
+                ArtigosExibidos.Remove(artigo);
+                _todosArtigosDaApi.Remove(artigo);
+            }
         }
+    }
+
+    // 4. Método auxiliar que estava faltando (Adicione se ainda não tiver)
+    private void FiltrarArtigosPorTopico(int topicId)
+    {
+        ArtigosExibidos.Clear();
+        var filtrados = _todosArtigosDaApi.Where(a => a.TopicID == topicId).ToList();
+        foreach (var artigo in filtrados) ArtigosExibidos.Add(artigo);
     }
 }
