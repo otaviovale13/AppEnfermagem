@@ -2,69 +2,59 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="AppEnfermagem.Views.InicioPage"
-             BackgroundColor="White"
+             BackgroundColor="#f8f8f8"
              NavigationPage.HasNavigationBar="False">
 
-    <ScrollView VerticalScrollBarVisibility="Never"
-                HorizontalScrollBarVisibility="Never">
-        <Grid RowDefinitions="Auto,*"
-              Padding="0">
+    <Grid>
 
-            <!-- CONTAINER CENTRAL -->
-            <VerticalStackLayout Grid.Row="0"
-                                 Spacing="20"
-                                 HorizontalOptions="Center"
-                                 MaximumWidthRequest="480"
-                                 Padding="20,40,20,30">
+        <VerticalStackLayout
+            Spacing="40"
+            HorizontalOptions="Center"
+            VerticalOptions="Start"
+            MaximumWidthRequest="480"
+            Padding="20,128,20,40">
 
-                <!-- LOGO -->
-                <Grid WidthRequest="180"
-                      HeightRequest="180"
-                      HorizontalOptions="Center"
-                      VerticalOptions="Center">
-                    <Image Source="logo.jpg"
-                           Aspect="AspectFill"
-                           WidthRequest="180"
-                           HeightRequest="180">
-                        <Image.Clip>
-                            <EllipseGeometry Center="90,90" RadiusX="90" RadiusY="90" />
-                        </Image.Clip>
-                    </Image>
-
-                    <Ellipse Stroke="#1a5276"
-                             StrokeThickness="2"
-                             Fill="Transparent"/>
-                </Grid>
-
-                <Label Text="“Seu guia no caminho de cuidar”"
-                       FontFamily="OpenSansRegular"
-                       FontSize="22"
-                       TextColor="#004AAD"
-                       HorizontalTextAlignment="Center"/>
-
-                <Button x:Name="BtnConhecerButton"
-                        Text="Conhecer"
-                        BackgroundColor="#004AAD"
-                        TextColor="White"
-                        FontSize="16"
-                        CornerRadius="25"
-                        HeightRequest="48"
-                        WidthRequest="240"
-                        HorizontalOptions="Center"
-                        Clicked="OnConhecerClicked"/>
-            </VerticalStackLayout>
-
-            <!-- IMAGEM INFERIOR -->
-            <Grid Grid.Row="1"
-                  HorizontalOptions="Fill"
-                  VerticalOptions="Fill">
-
-                <Image Source="medicos1.png"
+            <!-- LOGO -->
+            <Grid WidthRequest="220"
+                  HeightRequest="220"
+                  HorizontalOptions="Center">
+                <Image Source="logo.jpg"
                        Aspect="AspectFill"
-                       HorizontalOptions="Fill"
-                       VerticalOptions="Fill"/>
+                       WidthRequest="220"
+                       HeightRequest="220">
+                    <Image.Clip>
+                        <EllipseGeometry Center="110,110"
+                                         RadiusX="110"
+                                         RadiusY="110" />
+                    </Image.Clip>
+                </Image>
+
+                <Ellipse Stroke="#1a5276"
+                         StrokeThickness="2"
+                         Fill="Transparent"/>
             </Grid>
 
-        </Grid>
-    </ScrollView>
+            <!-- FRASE -->
+            <Label Text="“Seu guia no caminho de cuidar”"
+                   FontSize="20"
+                   FontAttributes="Italic"
+                   TextColor="#004AAD"
+                   HorizontalTextAlignment="Center"/>
+
+            <!-- BOTÃO -->
+            <Button x:Name="BtnConhecerButton"
+                    Text="Conhecer"
+                    BackgroundColor="#004AAD"
+                    TextColor="White"
+                    FontSize="16"
+                    CornerRadius="25"
+                    HeightRequest="48"
+                    WidthRequest="200"
+                    HorizontalOptions="Center"
+                    Margin="0,60,0,0"
+                    Clicked="OnConhecerClicked"/>
+
+        </VerticalStackLayout>
+
+    </Grid>
 </ContentPage>

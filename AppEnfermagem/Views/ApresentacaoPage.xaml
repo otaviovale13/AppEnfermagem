@@ -2,86 +2,82 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="AppEnfermagem.Views.ApresentacaoPage"
-             BackgroundColor="White"
+             BackgroundColor="#f8f8f8"
              NavigationPage.HasNavigationBar="False">
 
-    <ScrollView VerticalScrollBarVisibility="Never"
-                HorizontalScrollBarVisibility="Never">
-        <Grid RowDefinitions="Auto,Auto,*"
-              Padding="0">
+    <Grid>
 
-            <HorizontalStackLayout Grid.Row="0" 
-                                   Spacing="20" 
-                                   Padding="20,15,0,0" 
-                                   HorizontalOptions="Start">
-                <Image Source="bars_png.png" 
-                       HeightRequest="30" 
-                       WidthRequest="30" />
+        <!-- TOPO MENU -->
+        <HorizontalStackLayout
+            Spacing="15"
+            Padding="20,20,0,0"
+            HorizontalOptions="Start"
+            VerticalOptions="Start">
 
-                <Image Source="admin_png.png" 
-                       HeightRequest="30" 
-                       WidthRequest="30">
-                </Image>
-            </HorizontalStackLayout>
+            <Image Source="bars_png.png"
+                   HeightRequest="28"
+                   WidthRequest="28" />
 
-            <VerticalStackLayout Grid.Row="1"
-                                 Spacing="20"
-                                 HorizontalOptions="Center"
-                                 MaximumWidthRequest="480"
-                                 Padding="20,40,20,30">
+            <Image Source="admin_png.png"
+                   HeightRequest="28"
+                   WidthRequest="28" />
+        </HorizontalStackLayout>
 
-                <Grid WidthRequest="180"
-                      HeightRequest="180"
-                      HorizontalOptions="Center"
-                      VerticalOptions="Center">
-                    <Image Source="logo.jpg"
-                           Aspect="AspectFill"
-                           WidthRequest="180"
-                           HeightRequest="180">
-                        <Image.Clip>
-                            <EllipseGeometry Center="90,90" RadiusX="90" RadiusY="90" />
-                        </Image.Clip>
-                    </Image>
+        <!-- CONTEÚDO CENTRAL -->
+        <VerticalStackLayout
+            Spacing="25"
+            HorizontalOptions="Center"
+            VerticalOptions="Center"
+            MaximumWidthRequest="480"
+            Padding="20,80,20,40">
 
-                    <Ellipse Stroke="#1a5276"
-                             StrokeThickness="2"
-                             Fill="Transparent"/>
-                </Grid>
+            <!-- LOGO -->
+            <Grid WidthRequest="220"
+                  HeightRequest="220"
+                  HorizontalOptions="Center">
 
-                <Label Text="“Apoio à prática assistencial”"
-                       FontFamily="OpenSansRegular"
-                       FontSize="22"
-                       TextColor="#004AAD"
-                       HorizontalTextAlignment="Center"/>
-
-                <Label Text="“Conhecimento e prática na palma da mão. Seu suporte diário em Enfermagem”"
-                       FontFamily="OpenSansSemibold"
-                       FontSize="22"
-                       TextColor="#004AAD"
-                       HorizontalTextAlignment="Center"/>
-
-                <Button Text="Saiba mais"
-                        BackgroundColor="#004AAD"
-                        TextColor="White"
-                        CornerRadius="22"
-                        HeightRequest="44"
-                        WidthRequest="160"
-                        HorizontalOptions="Center"
-                        Margin="0,12"
-                        Clicked="SaibaMais_Clicked"/>
-
-            </VerticalStackLayout>
-
-            <Grid Grid.Row="2"
-                  HorizontalOptions="Fill"
-                  VerticalOptions="Fill">
-
-                <Image Source="medicos2.png"
+                <Image Source="logo.jpg"
                        Aspect="AspectFill"
-                       HorizontalOptions="Fill"
-                       VerticalOptions="Fill"/>
+                       WidthRequest="220"
+                       HeightRequest="220">
+                    <Image.Clip>
+                        <EllipseGeometry Center="110,110"
+                      RadiusX="110"
+                      RadiusY="110" />
+                    </Image.Clip>
+                </Image>
+
+                <Ellipse Stroke="#1a5276"
+                         StrokeThickness="2"
+                         Fill="Transparent"/>
             </Grid>
 
-        </Grid>
-    </ScrollView>
+            <!-- TEXTO 1 -->
+            <Label Text="Apoio à prática assistencial"
+                   FontSize="20"
+                   FontAttributes="Italic"
+                   TextColor="#004AAD"
+                   HorizontalTextAlignment="Center" />
+
+            <!-- TEXTO 2 -->
+            <Label Text="Conhecimento e prática na palma da mão. Seu suporte diário em Enfermagem"
+                   FontSize="22"
+                   TextColor="#004AAD"
+                   HorizontalTextAlignment="Center" />
+
+            <!-- BOTÃO -->
+            <Button Text="Saiba mais"
+                    BackgroundColor="#004AAD"
+                    TextColor="White"
+                    CornerRadius="25"
+                    HeightRequest="48"
+                    WidthRequest="180"
+                    HorizontalOptions="Center"
+                    Margin="0,60,0,0"
+                    Clicked="SaibaMais_Clicked"/>
+
+        </VerticalStackLayout>
+
+    </Grid>
+
 </ContentPage>
