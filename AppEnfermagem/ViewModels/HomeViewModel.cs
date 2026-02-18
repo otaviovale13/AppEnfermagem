@@ -21,15 +21,15 @@ public partial class HomeViewModel : ObservableObject
 {
     private readonly IContentService _contentService;
 
-    // Lista para o Carrossel
     public ObservableCollection<TopicPage> PaginasDeTopicos { get; } = new();
 
-    // 1. NOVA PROPRIEDADE: Lista de artigos que aparece na tela (Filtrada)
     public ObservableCollection<Article> ArtigosExibidos { get; } = new();
+
+    // Coleção para as imagens do tópico
+    public ObservableCollection<TopicImage> ImagensExibidas { get; } = new();
 
     private List<TopicUiModel> _todosTopicos = new();
 
-    // 2. NOVA LISTA PRIVADA: Cache de TODOS os artigos vindos da API
     private List<Article> _todosArtigosDaApi = new();
 
     [ObservableProperty] private bool isLoading;
@@ -40,11 +40,28 @@ public partial class HomeViewModel : ObservableObject
 
     [ObservableProperty] private bool isVisibleResultado = false;
 
+    [ObservableProperty] private bool isVisibleAlgo = false;
+
     [ObservableProperty] private bool isVisibleBotaoLimpar = false;
 
     [ObservableProperty] private string input;
 
-    // Variável para lembrar qual tópico está pintado de Ciano/Selecionado atualmente
+    // --- Propriedades de Modo (Abas) ---
+    [ObservableProperty] private bool isModeArticles = true;
+    [ObservableProperty] private bool isModeImages = false;
+
+    // --- NOVAS PROPRIEDADES: Controle de Lista Vazia ---
+    [ObservableProperty] private bool isArticlesEmpty;
+    [ObservableProperty] private bool isImagesEmpty;
+
+    // Cores das bolinhas
+    [ObservableProperty] private Color dotColorArticles = Color.FromArgb("#004AAD");
+    [ObservableProperty] private Color dotColorImages = Color.FromArgb("#CCCCCC");
+
+    // Popup de Zoom
+    [ObservableProperty] private bool isImagePopupVisible = false;
+    [ObservableProperty] private TopicImage imagemSelecionadaParaZoom;
+
     private TopicUiModel _topicoSelecionadoAtual;
 
     public HomeViewModel(IContentService contentService)
@@ -53,9 +70,55 @@ public partial class HomeViewModel : ObservableObject
     }
 
     [RelayCommand]
+    public void MudarParaArtigos()
+    {
+        IsModeArticles = true;
+        IsModeImages = false;
+        AtualizarCoresBolinhas();
+    }
+
+    [RelayCommand]
+    public void MudarParaImagens()
+    {
+        IsModeArticles = false;
+        IsModeImages = true;
+        AtualizarCoresBolinhas();
+    }
+
+    private void AtualizarCoresBolinhas()
+    {
+        if (IsModeArticles)
+        {
+            DotColorArticles = Color.FromArgb("#004AAD");
+            DotColorImages = Color.FromArgb("#CCCCCC");
+        }
+        else
+        {
+            DotColorArticles = Color.FromArgb("#CCCCCC");
+            DotColorImages = Color.FromArgb("#004AAD");
+        }
+    }
+
+    [RelayCommand]
+    public void AbrirImagem(TopicImage img)
+    {
+        if (img != null)
+        {
+            ImagemSelecionadaParaZoom = img;
+            IsImagePopupVisible = true;
+        }
+    }
+
+    [RelayCommand]
+    public void FecharImagem()
+    {
+        IsImagePopupVisible = false;
+        ImagemSelecionadaParaZoom = null;
+    }
+
+    [RelayCommand]
     public void SelecionarTopico(TopicUiModel itemSelecionado)
     {
-        // Lógica visual existente (pinta/despinta)
         foreach (var item in _todosTopicos)
         {
             item.IsSelected = false;
@@ -65,40 +128,54 @@ public partial class HomeViewModel : ObservableObject
         {
             itemSelecionado.IsSelected = true;
 
-            // --- ADICIONE ISSO AQUI: ---
-            _topicoSelecionadoAtual = itemSelecionado; // Salva na memória
-                                                       // ---------------------------
+            _topicoSelecionadoAtual = itemSelecionado;
 
+            // 1. Carregar Artigos
             FiltrarArtigosPorTopico(itemSelecionado.TopicData.TopicID);
+
+            // Verifica se a lista de artigos ficou vazia
+            IsArticlesEmpty = ArtigosExibidos.Count == 0;
+
+            // 2. Carregar Imagens
+            ImagensExibidas.Clear();
+            if (itemSelecionado.TopicData.Images != null)
+            {
+                var imagensOrdenadas = itemSelecionado.TopicData.Images.OrderBy(x => x.DisplayOrder);
+                foreach (var img in imagensOrdenadas)
+                {
+                    ImagensExibidas.Add(img);
+                }
+            }
+
+            // Verifica se a lista de imagens ficou vazia
+            IsImagesEmpty = ImagensExibidas.Count == 0;
+
+            // Volta para a aba principal (texto)
+            MudarParaArtigos();
         }
     }
 
     [RelayCommand]
-    public void Pesquisar() // Não precisa ser async, pois não vamos chamar a API
+    public void Pesquisar()
     {
-        // 1. Limpa apenas a lista visual
+        MudarParaArtigos();
+
         ArtigosExibidos.Clear();
 
-        // 2. Pega o texto digitado
         var inputPesquisa = Input?.Trim();
 
-        // Cenário 1: Campo vazio (Mostra tudo ou reseta o estado)
         if (string.IsNullOrEmpty(inputPesquisa))
         {
-            IsVisible = false;      // Esconde o carrossel (se for essa a intenção)
+            IsVisible = false;
             IsVisibleBotaoLimpar = true;
 
-            // Restaura todos os artigos que já estavam na memória
             foreach (var artigo in _todosArtigosDaApi)
             {
                 ArtigosExibidos.Add(artigo);
             }
         }
-        // Cenário 2: Tem texto (Filtra a lista existente)
         else
         {
-            // MELHORIA: Usamos .Contains e Ignoramos Maiúsculas/Minúsculas
-            // Antes estava (a.Title == inputPesquisa), que obrigava a digitar exatamente igual.
             var artigosFiltrados = _todosArtigosDaApi
                 .Where(a => a.Title != null &&
                             a.Title.Contains(inputPesquisa, StringComparison.OrdinalIgnoreCase))
@@ -108,14 +185,12 @@ public partial class HomeViewModel : ObservableObject
 
             if (artigosFiltrados.Count == 0)
             {
-                // Nenhum resultado encontrado
                 IsVisibleArtigos = false;
                 IsVisibleBotaoLimpar = true;
-                IsVisibleResultado = true; // Mostra mensagem de "Nada encontrado"
+                IsVisibleResultado = true; // "Nada foi encontrado" (Pesquisa)
             }
             else
             {
-                // Encontrou resultados
                 IsVisibleBotaoLimpar = true;
                 IsVisibleArtigos = true;
                 IsVisibleResultado = false;
@@ -126,38 +201,42 @@ public partial class HomeViewModel : ObservableObject
                 }
             }
         }
+
+        // Atualiza o estado de vazio também na pesquisa
+        IsArticlesEmpty = ArtigosExibidos.Count == 0;
     }
 
     [RelayCommand]
-    public void LimparPesquisa() // Remova o (TopicUiModel itemSelecionado)
+    public void LimparPesquisa()
     {
         ArtigosExibidos.Clear();
-        Input = ""; // Limpa o texto do Entry
+        Input = "";
 
-        // Usa a variável que salvamos na memória
         if (_topicoSelecionadoAtual != null)
         {
             FiltrarArtigosPorTopico(_topicoSelecionadoAtual.TopicData.TopicID);
+
+            // Recalcula vazio para o tópico atual
+            IsArticlesEmpty = ArtigosExibidos.Count == 0;
         }
         else
         {
-            // Caso de segurança (se nada estiver selecionado, restaura tudo)
             foreach (var artigo in _todosArtigosDaApi) ArtigosExibidos.Add(artigo);
+            IsArticlesEmpty = ArtigosExibidos.Count == 0;
         }
 
-        // Restaura a visualização
         IsVisible = true;
         IsVisibleArtigos = true;
         IsVisibleResultado = false;
         IsVisibleBotaoLimpar = false;
+
+        MudarParaArtigos();
     }
 
-    // Método auxiliar para filtrar
     private void FiltrarArtigosPorTopico(int topicId)
     {
         ArtigosExibidos.Clear();
 
-        // Pega apenas os artigos onde o TopicID é igual ao do tópico clicado
         var artigosFiltrados = _todosArtigosDaApi.Where(a => a.TopicID == topicId).ToList();
 
         foreach (var artigo in artigosFiltrados)
@@ -176,11 +255,10 @@ public partial class HomeViewModel : ObservableObject
 
             PaginasDeTopicos.Clear();
             _todosTopicos.Clear();
-            _todosArtigosDaApi.Clear(); // Limpa cache anterior
+            _todosArtigosDaApi.Clear();
 
             if (artigoItem != null)
             {
-                // 4. Salva todos os artigos recebidos na lista privada
                 if (artigoItem.Artigos != null)
                 {
                     _todosArtigosDaApi.AddRange(artigoItem.Artigos);
@@ -193,18 +271,16 @@ public partial class HomeViewModel : ObservableObject
                         _todosTopicos.Add(new TopicUiModel(topico));
                     }
 
-                    // Lógica de Paginação do Carrossel (Mantida igual)
                     for (int i = 0; i < _todosTopicos.Count; i += 3)
                     {
                         var grupo = _todosTopicos.Skip(i).Take(3);
                         PaginasDeTopicos.Add(new TopicPage(grupo));
                     }
 
-                    // Dentro do InicializarTela...
                     if (_todosTopicos.Count > 0)
                     {
                         var primeiroTopico = _todosTopicos[0];
-                        SelecionarTopico(primeiroTopico); // Isso agora vai salvar na variavel _topicoSelecionadoAtual
+                        SelecionarTopico(primeiroTopico);
                     }
                 }
             }

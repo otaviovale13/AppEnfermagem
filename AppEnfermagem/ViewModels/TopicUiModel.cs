@@ -16,16 +16,13 @@ public partial class TopicUiModel : ObservableObject
         TopicData = topic;
     }
 
-    // REGRA NOVA: 
-    // Selecionado = Ciano (#8EDDDE)
-    // Não Selecionado = Azul Escuro (#004AAD)
     public Color BackgroundColor => IsSelected ? Color.FromArgb("#8EDDDE") : Color.FromArgb("#004AAD");
 
     public ImageSource IconSource
     {
         get
         {
-            if (string.IsNullOrEmpty(TopicData.IconPath)) return "heart.png"; // Ícone padrão
+            if (string.IsNullOrEmpty(TopicData.IconPath)) return "heart.png";
             return TopicData.IconPath;
         }
     }
