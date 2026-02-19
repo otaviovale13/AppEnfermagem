@@ -74,6 +74,9 @@
 	  <MauiXaml Update="Views\FormularioArtigoPage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
+	  <MauiXaml Update="Views\FormularioImagemPage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
 	  <MauiXaml Update="Views\FormularioTopicoPage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>

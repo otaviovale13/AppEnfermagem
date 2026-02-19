@@ -2,11 +2,12 @@ using AppEnfermagem.ViewModels;
 
 namespace AppEnfermagem.Views;
 
-public partial class FormularioTopicoPage : ContentPage
+public partial class FormularioImagemPage : ContentPage
 {
-	public FormularioTopicoPage(FormularioTopicoViewModel viewModel)
+	public FormularioImagemPage(FormularioImagemViewModel viewModel)
 	{
 		InitializeComponent();
+
 		BindingContext = viewModel;
     }
 }

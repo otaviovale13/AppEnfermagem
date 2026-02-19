@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:converters="clr-namespace:AppEnfermagem.Converters"
+             x:Class="AppEnfermagem.Views.FormularioImagemPage"
+             Title="FormularioImagemPage">
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <converters:IdToTextConverter x:Key="IdToTextConverter" />
+        </ResourceDictionary>
+    </ContentPage.Resources>
+    <Grid>
+        <ScrollView Padding="20">
+            <VerticalStackLayout Spacing="15">
+                <Label Text="Vincular ao Tópico" FontAttributes="Bold" />
+                <Picker ItemsSource="{Binding ListaTopicos}" 
+                        ItemDisplayBinding="{Binding Name}"
+                        SelectedItem="{Binding TopicoSelecionado}" />
+
+                <Label Text="URL da Imagem" FontAttributes="Bold" />
+                <Entry Text="{Binding NovaImagem.ImageUrl}" Placeholder="https://..." />
+
+                <Label Text="Legenda (Opcional)" FontAttributes="Bold" />
+                <Entry Text="{Binding NovaImagem.Caption}" />
+
+                <Button Text="{Binding NovaImagem.ImageId, Converter={StaticResource IdToTextConverter}}" 
+        Command="{Binding SalvarImagemCommand}"
+        BackgroundColor="#004AAD"
+        TextColor="White"
+        FontAttributes="Bold"
+        CornerRadius="25"
+        HeightRequest="55"
+        Margin="0,20" />
+            </VerticalStackLayout>
+        </ScrollView>
+
+        <Grid BackgroundColor="#80000000" IsVisible="{Binding IsLoading}">
+            <ActivityIndicator IsRunning="{Binding IsLoading}" Color="White" VerticalOptions="Center" />
+        </Grid>
+    </Grid>
+</ContentPage>

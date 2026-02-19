@@ -7,7 +7,6 @@ using System.Collections.ObjectModel;
 
 namespace AppEnfermagem.ViewModels;
 
-// (Mantenha a classe TopicPage como estava)
 public class TopicPage
 {
     public List<TopicUiModel> ItensDaPagina { get; set; }
@@ -20,12 +19,17 @@ public class TopicPage
 public partial class HomeViewModel : ObservableObject
 {
     private readonly IContentService _contentService;
+
+    // --- Coleções ---
     public ObservableCollection<TopicPage> PaginasDeTopicos { get; } = new();
     public ObservableCollection<Article> ArtigosExibidos { get; } = new();
+    public ObservableCollection<TopicImage> ImagensExibidas { get; } = new();
+
     private List<TopicUiModel> _todosTopicos = new();
     private List<Article> _todosArtigosDaApi = new();
     private TopicUiModel _topicoSelecionadoAtual;
 
+    // --- Propriedades de Visibilidade e UI ---
     [ObservableProperty] private bool isLoading;
     [ObservableProperty] private bool isVisible = true;
     [ObservableProperty] private bool isVisibleArtigos = true;
@@ -34,26 +38,106 @@ public partial class HomeViewModel : ObservableObject
     [ObservableProperty] private string input;
     [ObservableProperty] private bool isAdmin;
 
+    // --- Funcionalidades de Abas (Texto/Imagem) ---
+    [ObservableProperty] private bool isModeArticles = true;
+    [ObservableProperty] private bool isModeImages = false;
+    [ObservableProperty] private bool isArticlesEmpty;
+    [ObservableProperty] private bool isImagesEmpty;
+    [ObservableProperty] private Color dotColorArticles = Color.FromArgb("#004AAD");
+    [ObservableProperty] private Color dotColorImages = Color.FromArgb("#CCCCCC");
+
+    // --- Zoom de Imagem ---
+    [ObservableProperty] private bool isImagePopupVisible = false;
+    [ObservableProperty] private TopicImage imagemSelecionadaParaZoom;
+
     public HomeViewModel(IContentService contentService) => _contentService = contentService;
 
     public void VerificarStatusAdmin() => IsAdmin = !string.IsNullOrEmpty(Preferences.Get("UserId", null));
 
+    #region NAVEGAÇÃO E MODO
+    [RelayCommand]
+    public void MudarParaArtigos()
+    {
+        IsModeArticles = true;
+        IsModeImages = false;
+        AtualizarCoresBolinhas();
+    }
+
+    [RelayCommand]
+    public void MudarParaImagens()
+    {
+        IsModeArticles = false;
+        IsModeImages = true;
+        AtualizarCoresBolinhas();
+    }
+
+    private void AtualizarCoresBolinhas()
+    {
+        DotColorArticles = IsModeArticles ? Color.FromArgb("#004AAD") : Color.FromArgb("#CCCCCC");
+        DotColorImages = IsModeImages ? Color.FromArgb("#004AAD") : Color.FromArgb("#CCCCCC");
+    }
+
+    [RelayCommand]
+    public void AbrirImagem(TopicImage img)
+    {
+        if (img != null)
+        {
+            ImagemSelecionadaParaZoom = img;
+            IsImagePopupVisible = true;
+        }
+    }
+
+    [RelayCommand]
+    public void FecharImagem()
+    {
+        IsImagePopupVisible = false;
+        ImagemSelecionadaParaZoom = null;
+    }
+    #endregion
+
+    #region GERENCIAMENTO DE TÓPICOS
     [RelayCommand]
     public void SelecionarTopico(TopicUiModel itemSelecionado)
     {
         if (itemSelecionado == null) return;
+
         foreach (var item in _todosTopicos) item.IsSelected = false;
         itemSelecionado.IsSelected = true;
         _topicoSelecionadoAtual = itemSelecionado;
+
+        // 1. Filtra Artigos
         FiltrarArtigosPorTopico(itemSelecionado.TopicData.TopicID);
+        IsArticlesEmpty = ArtigosExibidos.Count == 0;
+
+        // 2. Filtra Imagens
+        ImagensExibidas.Clear();
+        if (itemSelecionado.TopicData.Images != null)
+        {
+            var imagensOrdenadas = itemSelecionado.TopicData.Images.OrderBy(x => x.DisplayOrder);
+            foreach (var img in imagensOrdenadas) ImagensExibidas.Add(img);
+        }
+        IsImagesEmpty = ImagensExibidas.Count == 0;
+
+        // Reseta para aba de texto ao trocar tópico
+        MudarParaArtigos();
     }
 
+    private void FiltrarArtigosPorTopico(int topicId)
+    {
+        ArtigosExibidos.Clear();
+        var filtrados = _todosArtigosDaApi.Where(a => a.TopicID == topicId).ToList();
+        foreach (var artigo in filtrados) ArtigosExibidos.Add(artigo);
+    }
+    #endregion
 
+    #region PESQUISA
     [RelayCommand]
     public void Pesquisar()
     {
+        MudarParaArtigos(); // Pesquisa sempre foca em texto
         ArtigosExibidos.Clear();
         var inputPesquisa = Input?.Trim();
+
         if (string.IsNullOrEmpty(inputPesquisa))
         {
             IsVisible = false;
@@ -69,9 +153,29 @@ public partial class HomeViewModel : ObservableObject
             IsVisibleResultado = !filtrados.Any();
             foreach (var artigo in filtrados) ArtigosExibidos.Add(artigo);
         }
+        IsArticlesEmpty = ArtigosExibidos.Count == 0;
     }
 
     [RelayCommand]
+    public void LimparPesquisa()
+    {
+        ArtigosExibidos.Clear();
+        Input = string.Empty;
+
+        if (_topicoSelecionadoAtual != null)
+            SelecionarTopico(_topicoSelecionadoAtual);
+        else
+            foreach (var artigo in _todosArtigosDaApi) ArtigosExibidos.Add(artigo);
+
+        IsVisible = true;
+        IsVisibleArtigos = true;
+        IsVisibleResultado = false;
+        IsVisibleBotaoLimpar = false;
+        IsArticlesEmpty = ArtigosExibidos.Count == 0;
+    }
+    #endregion
+
+    #region CRUD E ADMINISTRAÇÃO
     public async Task InicializarTela()
     {
         try
@@ -79,13 +183,16 @@ public partial class HomeViewModel : ObservableObject
             IsLoading = true;
             var data = await _contentService.ObterTopicosAsync();
             PaginasDeTopicos.Clear(); _todosTopicos.Clear(); _todosArtigosDaApi.Clear();
+
             if (data != null)
             {
                 if (data.Artigos != null) _todosArtigosDaApi.AddRange(data.Artigos);
                 if (data.Topicos != null)
                 {
                     foreach (var t in data.Topicos) _todosTopicos.Add(new TopicUiModel(t));
-                    for (int i = 0; i < _todosTopicos.Count; i += 3) PaginasDeTopicos.Add(new TopicPage(_todosTopicos.Skip(i).Take(3)));
+                    for (int i = 0; i < _todosTopicos.Count; i += 3)
+                        PaginasDeTopicos.Add(new TopicPage(_todosTopicos.Skip(i).Take(3)));
+
                     if (_todosTopicos.Any()) SelecionarTopico(_todosTopicos[0]);
                 }
             }
@@ -98,7 +205,7 @@ public partial class HomeViewModel : ObservableObject
     {
         if (IsAdmin)
         {
-            if (await Shell.Current.DisplayAlert("Logout", "Deseja sair do modo administrador?", "Sim", "Não"))
+            if (await Shell.Current.DisplayAlert("Logout", "Deseja sair?", "Sim", "Não"))
             {
                 Preferences.Clear(); IsAdmin = false; await InicializarTela();
             }
@@ -106,65 +213,63 @@ public partial class HomeViewModel : ObservableObject
         else await Shell.Current.GoToAsync($"//{nameof(LoginPage)}");
     }
 
-    [RelayCommand] public async Task AdicionarArtigo() => await Shell.Current.GoToAsync(nameof(FormularioArtigoPage));
+    [RelayCommand]
+    public async Task SelecionarTipoPostagem()
+    {
+        string acao = await App.Current.MainPage.DisplayActionSheet("Postar:", "Cancelar", null, "Texto", "Imagem");
+        if (acao == "Texto") await Shell.Current.GoToAsync(nameof(FormularioArtigoPage));
+        else if (acao == "Imagem") await Shell.Current.GoToAsync(nameof(FormularioImagemPage));
+    }
+
     [RelayCommand] public async Task IrParaCriarTopico() => await Shell.Current.GoToAsync(nameof(FormularioTopicoPage));
+    [RelayCommand] public async Task EditarArtigo(Article artigo) => await Shell.Current.GoToAsync(nameof(FormularioArtigoPage), new Dictionary<string, object> { { "ArtigoObjeto", artigo } });
+    [RelayCommand] public async Task EditarTopico(TopicUiModel item) => await Shell.Current.GoToAsync(nameof(FormularioTopicoPage), new Dictionary<string, object> { { "TopicoObjeto", item.TopicData } });
 
-    // 1. Limpar Pesquisa (Certifique-se de que não recebe parâmetros)
-    [RelayCommand]
-    public void LimparPesquisa()
-    {
-        ArtigosExibidos.Clear();
-        Input = string.Empty;
-
-        if (_topicoSelecionadoAtual != null)
-        {
-            FiltrarArtigosPorTopico(_topicoSelecionadoAtual.TopicData.TopicID);
-        }
-        else
-        {
-            foreach (var artigo in _todosArtigosDaApi) ArtigosExibidos.Add(artigo);
-        }
-
-        IsVisible = true;
-        IsVisibleArtigos = true;
-        IsVisibleResultado = false;
-        IsVisibleBotaoLimpar = false;
-    }
-
-    // 2. Editar Artigo (Precisa receber o objeto Article)
-    [RelayCommand]
-    public async Task EditarArtigo(Article artigo)
-    {
-        if (artigo == null) return;
-        var parametros = new Dictionary<string, object> { { "ArtigoObjeto", artigo } };
-        await Shell.Current.GoToAsync(nameof(FormularioArtigoPage), parametros);
-    }
-
-    // 3. Deletar Artigo (Precisa receber o objeto Article)
     [RelayCommand]
     public async Task DeletarArtigo(Article artigo)
     {
-        if (artigo == null) return;
+        if (artigo == null || !await App.Current.MainPage.DisplayAlert("Excluir", "Tem certeza?", "Sim", "Não")) return;
+        if (await _contentService.DeletarArtigoAsync(artigo.ArticleID)) ArtigosExibidos.Remove(artigo);
+    }
 
-        bool confirmar = await App.Current.MainPage.DisplayAlert("Confirmar",
-            $"Deseja excluir o artigo '{artigo.Title}'?", "Sim", "Não");
+    [RelayCommand]
+    public async Task DeletarTopico(TopicUiModel item)
+    {
+        if (item == null || !await App.Current.MainPage.DisplayAlert("Excluir", "Apagar categoria e tudo nela?", "Sim", "Não")) return;
+        if (await _contentService.DeletarTopicoAsync(item.TopicData.TopicID)) await InicializarTela();
+    }
 
-        if (confirmar)
+    // Novos comandos para imagens se precisar editar/excluir individualmente
+    [RelayCommand]
+    public async Task DeletarImagem(TopicImage imagem)
+    {
+        if (imagem == null || !await App.Current.MainPage.DisplayAlert("Excluir", "Remover esta imagem?", "Sim", "Não")) return;
+
+        IsLoading = true;
+        try
         {
-            var sucesso = await _contentService.DeletarArtigoAsync(artigo.ArticleID);
+            var sucesso = await _contentService.DeletarImagemTopicoAsync(imagem.ImageId);
             if (sucesso)
             {
-                ArtigosExibidos.Remove(artigo);
-                _todosArtigosDaApi.Remove(artigo);
+                // 1. Remove da lista que está na tela agora
+                ImagensExibidas.Remove(imagem);
+
+                // 2. CORREÇÃO: Remove do cache interno do tópico
+                if (_topicoSelecionadoAtual?.TopicData?.Images != null)
+                {
+                    _topicoSelecionadoAtual.TopicData.Images.Remove(imagem);
+                }
+
+                // 3. Atualiza o estado de lista vazia
+                IsImagesEmpty = ImagensExibidas.Count == 0;
             }
         }
+        finally { IsLoading = false; }
     }
 
-    // 4. Método auxiliar que estava faltando (Adicione se ainda não tiver)
-    private void FiltrarArtigosPorTopico(int topicId)
-    {
-        ArtigosExibidos.Clear();
-        var filtrados = _todosArtigosDaApi.Where(a => a.TopicID == topicId).ToList();
-        foreach (var artigo in filtrados) ArtigosExibidos.Add(artigo);
-    }
+    [RelayCommand]
+    public async Task EditarImagem(TopicImage imagem) =>
+    await Shell.Current.GoToAsync(nameof(FormularioImagemPage),
+        new Dictionary<string, object> { { "ImagemObjeto", imagem } });
+    #endregion
 }

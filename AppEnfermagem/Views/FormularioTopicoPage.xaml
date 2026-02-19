@@ -44,6 +44,21 @@
                        FontSize="12"
                        HorizontalTextAlignment="Center"
                        Margin="10,0"/>
+                
+                <Label Text="Descrição (Opcional)" TextColor="#333333" FontAttributes="Bold" Margin="5,0"/>
+                <Border Stroke="#004AAD" StrokeThickness="2" BackgroundColor="White" Padding="15,0" StrokeShape="RoundRectangle 15" HeightRequest="100">
+                    <Editor Text="{Binding NovoTopico.Description}" 
+            Placeholder="Descreva brevemente esta categoria..."
+            PlaceholderColor="Gray" TextColor="Black" FontSize="15" />
+                </Border>
+
+                <Label Text="Ordem de Exibição" TextColor="#333333" FontAttributes="Bold" Margin="5,0"/>
+                <Border Stroke="#004AAD" StrokeThickness="2" BackgroundColor="White" Padding="15,0" StrokeShape="RoundRectangle 15" HeightRequest="55">
+                    <Entry Text="{Binding NovoTopico.DisplayOrder}" 
+           Keyboard="Numeric"
+           Placeholder="Ex: 1"
+           PlaceholderColor="Gray" TextColor="Black" FontSize="16" VerticalOptions="Center" />
+                </Border>
 
                 <Button Text="Criar Categoria" 
                         BackgroundColor="#004AAD" 
@@ -61,7 +76,6 @@
 
             </VerticalStackLayout>
         </ScrollView>
-
         <Grid BackgroundColor="#AA000000" 
               IsVisible="{Binding IsLoading}" 
               InputTransparent="False"
@@ -84,6 +98,5 @@
                        HorizontalTextAlignment="Center"/>
             </VerticalStackLayout>
         </Grid>
-
     </Grid>
 </ContentPage>
