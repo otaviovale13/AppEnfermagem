@@ -1,4 +1,5 @@
 ﻿using AppEnfermagem.Models;
+using AppEnfermagem.Models.AppEnfermagem.Models;
 using AppEnfermagem.Services;
 using AppEnfermagem.Views;
 using CommunityToolkit.Mvvm.ComponentModel;
@@ -25,9 +26,6 @@ public partial class HomeViewModel : ObservableObject
     public ObservableCollection<Article> ArtigosExibidos { get; } = new();
     public ObservableCollection<TopicImage> ImagensExibidas { get; } = new();
 
-    // Coleção para as imagens do tópico
-    public ObservableCollection<TopicImage> ImagensExibidas { get; } = new();
-
     private List<TopicUiModel> _todosTopicos = new();
     private List<Article> _todosArtigosDaApi = new();
     private TopicUiModel _topicoSelecionadoAtual;
@@ -48,23 +46,6 @@ public partial class HomeViewModel : ObservableObject
     [ObservableProperty] private bool isImagesEmpty;
     [ObservableProperty] private Color dotColorArticles = Color.FromArgb("#004AAD");
     [ObservableProperty] private Color dotColorImages = Color.FromArgb("#CCCCCC");
-    // --- Propriedades de Modo (Abas) ---
-    [ObservableProperty] private bool isModeArticles = true;
-    [ObservableProperty] private bool isModeImages = false;
-
-    // --- NOVAS PROPRIEDADES: Controle de Lista Vazia ---
-    [ObservableProperty] private bool isArticlesEmpty;
-    [ObservableProperty] private bool isImagesEmpty;
-
-    // Cores das bolinhas
-    [ObservableProperty] private Color dotColorArticles = Color.FromArgb("#004AAD");
-    [ObservableProperty] private Color dotColorImages = Color.FromArgb("#CCCCCC");
-
-    // Popup de Zoom
-    [ObservableProperty] private bool isImagePopupVisible = false;
-    [ObservableProperty] private TopicImage imagemSelecionadaParaZoom;
-
-    private TopicUiModel _topicoSelecionadoAtual;
 
     // --- Zoom de Imagem ---
     [ObservableProperty] private bool isImagePopupVisible = false;
@@ -85,63 +66,11 @@ public partial class HomeViewModel : ObservableObject
 
     [RelayCommand]
     public void MudarParaImagens()
-    public void MudarParaArtigos()
-    {
-        IsModeArticles = true;
-        IsModeImages = false;
-        AtualizarCoresBolinhas();
-    }
-
-    [RelayCommand]
-    public void MudarParaImagens()
     {
         IsModeArticles = false;
         IsModeImages = true;
         AtualizarCoresBolinhas();
     }
-
-    private void AtualizarCoresBolinhas()
-    {
-        if (IsModeArticles)
-        {
-            DotColorArticles = Color.FromArgb("#004AAD");
-            DotColorImages = Color.FromArgb("#CCCCCC");
-        }
-        else
-        {
-            DotColorArticles = Color.FromArgb("#CCCCCC");
-            DotColorImages = Color.FromArgb("#004AAD");
-        }
-    }
-
-    [RelayCommand]
-    public void AbrirImagem(TopicImage img)
-    {
-        if (img != null)
-        {
-            ImagemSelecionadaParaZoom = img;
-            IsImagePopupVisible = true;
-        }
-    }
-
-    [RelayCommand]
-    public void FecharImagem()
-    {
-        IsImagePopupVisible = false;
-        ImagemSelecionadaParaZoom = null;
-    }
-
-    [RelayCommand]
-    public void SelecionarTopico(TopicUiModel itemSelecionado)
-    {
-        IsModeArticles = false;
-        IsModeImages = true;
-        AtualizarCoresBolinhas();
-    }
-        foreach (var item in _todosTopicos)
-        {
-            item.IsSelected = false;
-        }
 
     private void AtualizarCoresBolinhas()
     {
@@ -158,56 +87,20 @@ public partial class HomeViewModel : ObservableObject
             IsImagePopupVisible = true;
         }
     }
-            _topicoSelecionadoAtual = itemSelecionado;
-
-            // 1. Carregar Artigos
-            FiltrarArtigosPorTopico(itemSelecionado.TopicData.TopicID);
-
-            // Verifica se a lista de artigos ficou vazia
-            IsArticlesEmpty = ArtigosExibidos.Count == 0;
-
-            // 2. Carregar Imagens
-            ImagensExibidas.Clear();
-            if (itemSelecionado.TopicData.Images != null)
-            {
-                var imagensOrdenadas = itemSelecionado.TopicData.Images.OrderBy(x => x.DisplayOrder);
-                foreach (var img in imagensOrdenadas)
-                {
-                    ImagensExibidas.Add(img);
-                }
-            }
-
-            // Verifica se a lista de imagens ficou vazia
-            IsImagesEmpty = ImagensExibidas.Count == 0;
-
-            // Volta para a aba principal (texto)
-            MudarParaArtigos();
-        }
-    }
 
     [RelayCommand]
     public void FecharImagem()
-    public void Pesquisar()
     {
         IsImagePopupVisible = false;
         ImagemSelecionadaParaZoom = null;
     }
     #endregion
-        MudarParaArtigos();
-
-        ArtigosExibidos.Clear();
 
     #region GERENCIAMENTO DE TÓPICOS
     [RelayCommand]
     public void SelecionarTopico(TopicUiModel itemSelecionado)
     {
         if (itemSelecionado == null) return;
-        var inputPesquisa = Input?.Trim();
-
-        if (string.IsNullOrEmpty(inputPesquisa))
-        {
-            IsVisible = false;
-            IsVisibleBotaoLimpar = true;
 
         foreach (var item in _todosTopicos) item.IsSelected = false;
         itemSelecionado.IsSelected = true;
@@ -237,17 +130,6 @@ public partial class HomeViewModel : ObservableObject
         foreach (var artigo in filtrados) ArtigosExibidos.Add(artigo);
     }
     #endregion
-            foreach (var artigo in _todosArtigosDaApi)
-            {
-                ArtigosExibidos.Add(artigo);
-            }
-        }
-        else
-        {
-            var artigosFiltrados = _todosArtigosDaApi
-                .Where(a => a.Title != null &&
-                            a.Title.Contains(inputPesquisa, StringComparison.OrdinalIgnoreCase))
-                .ToList();
 
     #region PESQUISA
     [RelayCommand]
@@ -271,27 +153,7 @@ public partial class HomeViewModel : ObservableObject
             IsVisibleArtigos = filtrados.Any();
             IsVisibleResultado = !filtrados.Any();
             foreach (var artigo in filtrados) ArtigosExibidos.Add(artigo);
-            if (artigosFiltrados.Count == 0)
-            {
-                IsVisibleArtigos = false;
-                IsVisibleBotaoLimpar = true;
-                IsVisibleResultado = true; // "Nada foi encontrado" (Pesquisa)
-            }
-            else
-            {
-                IsVisibleBotaoLimpar = true;
-                IsVisibleArtigos = true;
-                IsVisibleResultado = false;
-
-                foreach (var artigo in artigosFiltrados)
-                {
-                    ArtigosExibidos.Add(artigo);
-                }
-            }
         }
-        IsArticlesEmpty = ArtigosExibidos.Count == 0;
-
-        // Atualiza o estado de vazio também na pesquisa
         IsArticlesEmpty = ArtigosExibidos.Count == 0;
     }
 
@@ -300,16 +162,9 @@ public partial class HomeViewModel : ObservableObject
     {
         ArtigosExibidos.Clear();
         Input = string.Empty;
-        Input = "";
 
         if (_topicoSelecionadoAtual != null)
             SelecionarTopico(_topicoSelecionadoAtual);
-        {
-            FiltrarArtigosPorTopico(_topicoSelecionadoAtual.TopicData.TopicID);
-
-            // Recalcula vazio para o tópico atual
-            IsArticlesEmpty = ArtigosExibidos.Count == 0;
-        }
         else
             foreach (var artigo in _todosArtigosDaApi) ArtigosExibidos.Add(artigo);
 
@@ -318,8 +173,6 @@ public partial class HomeViewModel : ObservableObject
         IsVisibleResultado = false;
         IsVisibleBotaoLimpar = false;
         IsArticlesEmpty = ArtigosExibidos.Count == 0;
-
-        MudarParaArtigos();
     }
     #endregion
 
@@ -331,11 +184,6 @@ public partial class HomeViewModel : ObservableObject
             IsLoading = true;
             var data = await _contentService.ObterTopicosAsync();
             PaginasDeTopicos.Clear(); _todosTopicos.Clear(); _todosArtigosDaApi.Clear();
-    private void FiltrarArtigosPorTopico(int topicId)
-    {
-        ArtigosExibidos.Clear();
-
-        var artigosFiltrados = _todosArtigosDaApi.Where(a => a.TopicID == topicId).ToList();
 
             if (data != null)
             {
@@ -377,9 +225,6 @@ public partial class HomeViewModel : ObservableObject
     [RelayCommand] public async Task IrParaCriarTopico() => await Shell.Current.GoToAsync(nameof(FormularioTopicoPage));
     [RelayCommand] public async Task EditarArtigo(Article artigo) => await Shell.Current.GoToAsync(nameof(FormularioArtigoPage), new Dictionary<string, object> { { "ArtigoObjeto", artigo } });
     [RelayCommand] public async Task EditarTopico(TopicUiModel item) => await Shell.Current.GoToAsync(nameof(FormularioTopicoPage), new Dictionary<string, object> { { "TopicoObjeto", item.TopicData } });
-            PaginasDeTopicos.Clear();
-            _todosTopicos.Clear();
-            _todosArtigosDaApi.Clear();
 
     [RelayCommand]
     public async Task DeletarArtigo(Article artigo)
@@ -387,12 +232,6 @@ public partial class HomeViewModel : ObservableObject
         if (artigo == null || !await App.Current.MainPage.DisplayAlert("Excluir", "Tem certeza?", "Sim", "Não")) return;
         if (await _contentService.DeletarArtigoAsync(artigo.ArticleID)) ArtigosExibidos.Remove(artigo);
     }
-            if (artigoItem != null)
-            {
-                if (artigoItem.Artigos != null)
-                {
-                    _todosArtigosDaApi.AddRange(artigoItem.Artigos);
-                }
 
     [RelayCommand]
     public async Task DeletarTopico(TopicUiModel item)
@@ -415,11 +254,6 @@ public partial class HomeViewModel : ObservableObject
             {
                 // 1. Remove da lista que está na tela agora
                 ImagensExibidas.Remove(imagem);
-                    for (int i = 0; i < _todosTopicos.Count; i += 3)
-                    {
-                        var grupo = _todosTopicos.Skip(i).Take(3);
-                        PaginasDeTopicos.Add(new TopicPage(grupo));
-                    }
 
                 // 2. CORREÇÃO: Remove do cache interno do tópico
                 if (_topicoSelecionadoAtual?.TopicData?.Images != null)
@@ -430,21 +264,6 @@ public partial class HomeViewModel : ObservableObject
                 // 3. Atualiza o estado de lista vazia
                 IsImagesEmpty = ImagensExibidas.Count == 0;
             }
-                    if (_todosTopicos.Count > 0)
-                    {
-                        var primeiroTopico = _todosTopicos[0];
-                        SelecionarTopico(primeiroTopico);
-                    }
-                }
-            }
-        }
-        catch (Exception ex)
-        {
-            System.Diagnostics.Debug.WriteLine($"Erro: {ex.Message}");
-        }
-        finally
-        {
-            IsLoading = false;
         }
         finally { IsLoading = false; }
     }
