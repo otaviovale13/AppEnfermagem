@@ -13,11 +13,14 @@
         <ScrollView>
             <VerticalStackLayout Margin="20" Spacing="20">
                 <HorizontalStackLayout HorizontalOptions="End">
-                    <ImageButton Source="admin_png.png" 
-                                 HeightRequest="30" 
-                                 WidthRequest="30"
-                                 BackgroundColor="Transparent"
-                                 Command="{Binding AdminIconClickCommand}" />
+                    <Image Source="admin_png.png" 
+                           HeightRequest="30" 
+                           WidthRequest="30"
+                           BackgroundColor="Transparent">
+                        <Image.GestureRecognizers>
+                            <TapGestureRecognizer Command="{Binding AdminIconClickCommand}" />
+                        </Image.GestureRecognizers>
+                    </Image>
                 </HorizontalStackLayout>
 
                 <VerticalStackLayout Spacing="15">
@@ -38,14 +41,17 @@
                                    Margin="15,0" 
                                    BackgroundColor="Transparent" />
 
-                            <ImageButton Grid.Column="1"
-                                         Source="search_png.png"
-                                         BackgroundColor="Transparent"
-                                         HeightRequest="25"
-                                         WidthRequest="25"
-                                         Command="{Binding PesquisarCommand}"
-                                         VerticalOptions="Center"
-                                         HorizontalOptions="Center"/>
+                            <Image Grid.Column="1"
+                                   Source="search_png.png"
+                                   BackgroundColor="Transparent"
+                                   HeightRequest="25"
+                                   WidthRequest="25"
+                                   VerticalOptions="Center"
+                                   HorizontalOptions="Center">
+                                <Image.GestureRecognizers>
+                                    <TapGestureRecognizer Command="{Binding PesquisarCommand}" />
+                                </Image.GestureRecognizers>
+                            </Image>
                         </Grid>
                     </Border>
 
@@ -72,15 +78,19 @@
                     <Grid ColumnDefinitions="*, Auto" Margin="5,0">
                         <Label Text="Categorias" FontSize="18" FontAttributes="Bold" TextColor="#004AAD" VerticalOptions="Center" />
 
-                        <ImageButton Grid.Column="1" 
-                                     Source="plus_icon.png" 
-                                     HeightRequest="32" 
-                                     WidthRequest="32" 
-                                     BackgroundColor="#8EDDDE" 
-                                     CornerRadius="16" 
-                                     Padding="6"
-                                     IsVisible="{Binding IsAdmin}" 
-                                     Command="{Binding IrParaCriarTopicoCommand}" />
+                        <Border Grid.Column="1" 
+                                HeightRequest="32" 
+                                WidthRequest="32" 
+                                BackgroundColor="#8EDDDE" 
+                                StrokeShape="RoundRectangle 16"
+                                StrokeThickness="0"
+                                Padding="6"
+                                IsVisible="{Binding IsAdmin}">
+                            <Border.GestureRecognizers>
+                                <TapGestureRecognizer Command="{Binding IrParaCriarTopicoCommand}" />
+                            </Border.GestureRecognizers>
+                            <Image Source="plus_icon.png" BackgroundColor="Transparent" Aspect="AspectFit"/>
+                        </Border>
                     </Grid>
 
                     <CarouselView ItemsSource="{Binding PaginasDeTopicos}" 
@@ -97,28 +107,46 @@
 
                                     <BindableLayout.ItemTemplate>
                                         <DataTemplate x:DataType="vm:TopicUiModel">
-                                            <VerticalStackLayout Spacing="5" WidthRequest="90" Margin="5">
-                                                <Border StrokeShape="RoundRectangle 20" 
-                                                        BackgroundColor="{Binding BackgroundColor}" 
-                                                        HeightRequest="80" 
-                                                        WidthRequest="80"
-                                                        StrokeThickness="0">
+                                            <Grid WidthRequest="90" Margin="5">
 
-                                                    <FlyoutBase.ContextFlyout>
-                                                        <MenuFlyout>
-                                                            <MenuFlyoutItem Text="Editar" Command="{Binding Source={RelativeSource AncestorType={x:Type vm:HomeViewModel}}, Path=EditarTopicoCommand}" CommandParameter="{Binding .}"/>
-                                                            <MenuFlyoutItem Text="Excluir" IsDestructive="True" Command="{Binding Source={RelativeSource AncestorType={x:Type vm:HomeViewModel}}, Path=DeletarTopicoCommand}" CommandParameter="{Binding .}"/>
-                                                        </MenuFlyout>
-                                                    </FlyoutBase.ContextFlyout>
+                                                <VerticalStackLayout Spacing="5" HorizontalOptions="Center">
+                                                    <Border StrokeShape="RoundRectangle 20" 
+                                                            BackgroundColor="{Binding BackgroundColor}" 
+                                                            HeightRequest="80" 
+                                                            WidthRequest="80"
+                                                            StrokeThickness="0">
+
+                                                        <Border.GestureRecognizers>
+                                                            <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type vm:HomeViewModel}}, Path=SelecionarTopicoCommand}" CommandParameter="{Binding .}" />
+                                                        </Border.GestureRecognizers>
+
+                                                        <Image Source="{Binding IconSource}" HeightRequest="40" WidthRequest="40" HorizontalOptions="Center" VerticalOptions="Center"/>
+                                                    </Border>
+                                                    <Label Text="{Binding TopicData.Name}" TextColor="#333" FontSize="11" HorizontalTextAlignment="Center" LineBreakMode="TailTruncation"/>
+                                                </VerticalStackLayout>
+
+                                                <Border HeightRequest="26" WidthRequest="26" 
+                                                        BackgroundColor="White" 
+                                                        StrokeShape="RoundRectangle 13" 
+                                                        StrokeThickness="0"
+                                                        HorizontalOptions="End" 
+                                                        VerticalOptions="Start"
+                                                        TranslationX="-5" 
+                                                        TranslationY="-5"
+                                                        IsVisible="{Binding Source={RelativeSource AncestorType={x:Type vm:HomeViewModel}}, Path=IsAdmin}">
+
+                                                    <Border.Shadow>
+                                                        <Shadow Brush="Black" Offset="0,2" Radius="3" Opacity="0.3"/>
+                                                    </Border.Shadow>
 
                                                     <Border.GestureRecognizers>
-                                                        <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type vm:HomeViewModel}}, Path=SelecionarTopicoCommand}" CommandParameter="{Binding .}" />
+                                                        <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type vm:HomeViewModel}}, Path=AbrirOpcoesTopicoCommand}" CommandParameter="{Binding .}" />
                                                     </Border.GestureRecognizers>
 
-                                                    <Image Source="{Binding IconSource}" HeightRequest="40" WidthRequest="40" HorizontalOptions="Center" VerticalOptions="Center"/>
+                                                    <Image Source="pencil_icon.png" Aspect="AspectFit" Margin="5"/>
                                                 </Border>
-                                                <Label Text="{Binding TopicData.Name}" TextColor="#333" FontSize="11" HorizontalTextAlignment="Center" LineBreakMode="TailTruncation"/>
-                                            </VerticalStackLayout>
+
+                                            </Grid>
                                         </DataTemplate>
                                     </BindableLayout.ItemTemplate>
                                 </FlexLayout>
@@ -159,7 +187,7 @@
 
                                     <VerticalStackLayout Spacing="8">
                                         <Grid ColumnDefinitions="*, Auto">
-                                            <Label FontSize="16" FontAttributes="Bold" Text="{Binding Title}" TextColor="#004AAD" LineBreakMode="TailTruncation"/>
+                                            <Label FontSize="16" FontAttributes="Bold" Text="{Binding Title}" TextColor="#004AAD" LineBreakMode="WordWrap"/>
                                             <HorizontalStackLayout Grid.Column="1" Spacing="10" IsVisible="{Binding Source={RelativeSource AncestorType={x:Type vm:HomeViewModel}}, Path=IsAdmin}">
                                                 <Image Source="pencil_icon.png" 
                                                        HeightRequest="30" 
@@ -230,7 +258,7 @@
                                                            Aspect="AspectFit">
                                                         <Image.GestureRecognizers>
                                                             <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type vm:HomeViewModel}}, Path=DeletarImagemCommand}" 
-                                                                                    CommandParameter="{Binding .}"/>
+                                                                                  CommandParameter="{Binding .}"/>
                                                         </Image.GestureRecognizers>
                                                     </Image>
                                                 </HorizontalStackLayout>

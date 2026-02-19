@@ -233,7 +233,12 @@ public partial class HomeViewModel : ObservableObject
     public async Task DeletarArtigo(Article artigo)
     {
         if (artigo == null || !await App.Current.MainPage.DisplayAlert("Excluir", "Tem certeza?", "Sim", "Não")) return;
-        if (await _contentService.DeletarArtigoAsync(artigo.ArticleID)) ArtigosExibidos.Remove(artigo);
+
+        if (await _contentService.DeletarArtigoAsync(artigo.ArticleID))
+        {
+            ArtigosExibidos.Remove(artigo);
+            _todosArtigosDaApi.Remove(artigo); // <-- ESSA É A LINHA MÁGICA QUE FALTAVA
+        }
     }
 
     [RelayCommand]
@@ -276,4 +281,23 @@ public partial class HomeViewModel : ObservableObject
     await Shell.Current.GoToAsync(nameof(FormularioImagemPage),
         new Dictionary<string, object> { { "ImagemObjeto", imagem } });
     #endregion
+
+    [RelayCommand]
+    public async Task AbrirOpcoesTopico(TopicUiModel item)
+    {
+        if (item == null) return;
+
+        // Abre um menu nativo do celular subindo pela parte de baixo da tela
+        string acao = await App.Current.MainPage.DisplayActionSheet($"Opções: {item.TopicData.Name}", "Cancelar", null, "Editar", "Excluir");
+
+        // Redireciona para os comandos que você já tem prontos!
+        if (acao == "Editar")
+        {
+            await EditarTopico(item);
+        }
+        else if (acao == "Excluir")
+        {
+            await DeletarTopico(item);
+        }
+    }
 }
