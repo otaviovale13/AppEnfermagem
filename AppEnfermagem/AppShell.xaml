@@ -5,9 +5,32 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:local="clr-namespace:AppEnfermagem.Views"
     Shell.FlyoutBehavior="Disabled"
+    Shell.NavBarIsVisible="False"
+    Title="AppEnfermagem">
+    xmlns:local="clr-namespace:AppEnfermagem.Views"
+    Shell.FlyoutBehavior="Disabled"
     Shell.NavBarIsVisible="False">
 
     <ShellContent
+        Title="Loading"
+        ContentTemplate="{DataTemplate local:LoadingPage}"
+        Route="LoadingPage" />
+
+    <ShellContent
+        Title="Home"
+        ContentTemplate="{DataTemplate local:HomePage}"
+        Route="HomePage" />
+
+    <ShellContent
+        Title="Login"
+        ContentTemplate="{DataTemplate local:LoginPage}"
+        Route="LoginPage" />
+
+    <ShellContent
+        Title="Adm"
+        ContentTemplate="{DataTemplate local:AdmPage}"
+        Route="AdmPage" />
+
      Title="Home"
      ContentTemplate="{DataTemplate local:InicioPage}"
      Route="InicioPage"/>

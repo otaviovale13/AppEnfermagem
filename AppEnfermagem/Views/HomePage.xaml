@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="AppEnfermagem.Views.HomePage"
+             xmlns:vm="clr-namespace:AppEnfermagem.ViewModels"
+             xmlns:models="clr-namespace:AppEnfermagem.Models" 
+             xmlns:core="clr-namespace:AppEnfermagem.Models" 
+             x:DataType="vm:HomeViewModel"
+             Title="HomePage"
+             BackgroundColor="#F8F8F8">
+
+    <Grid>
+        <ScrollView>
+            <VerticalStackLayout Margin="20" Spacing="50">
+
+                <HorizontalStackLayout Spacing="20">
+                    <Image Source="bars_png.png" HorizontalOptions="Start" />
+                    <Image Source="admin_png.png" HorizontalOptions="Start">
+                        <Image.GestureRecognizers>
+                            <TapGestureRecognizer Command="{Binding IrLoginCommand}" />
+                        </Image.GestureRecognizers>
+                    </Image>
+                </HorizontalStackLayout>
+
+                <VerticalStackLayout HorizontalOptions="Center" VerticalOptions="Center" Spacing="30">
+                    <Border Stroke="#004AAD" StrokeThickness="3" StrokeShape="RoundRectangle 35" BackgroundColor="White" HeightRequest="46" WidthRequest="333">
+                        <Grid ColumnDefinitions="*, Auto">
+                            <Entry Text="{Binding Input}" Grid.Column="0" Placeholder="Pesquise mais artigos..." PlaceholderColor="Black" TextColor="Black" FontSize="16" VerticalOptions="Center"  Margin="15,0,10,0" BackgroundColor="Transparent" />
+                            <Border Grid.Column="1" StrokeShape="RoundRectangle 35" BackgroundColor="#004AAD" HeightRequest="46" WidthRequest="46" Padding="12">
+                                <Border.GestureRecognizers>
+                                    <TapGestureRecognizer Command="{Binding PesquisarCommand}" />
+                                </Border.GestureRecognizers>
+                                <Image Source="search_png.png" />
+                            </Border>
+                        </Grid>
+                    </Border>
+
+                    <Button Text="Limpar Pesquisa" FontSize="14" TextColor="White" BackgroundColor="#004AAD" CornerRadius="25" HeightRequest="40" WidthRequest="150" Command="{Binding LimparPesquisaCommand}" IsVisible="{Binding IsVisibleBotaoLimpar}" />
+                    <Label Text="Nada foi encontrado!" FontSize="20" FontAttributes="Bold" TextColor="Black" HorizontalTextAlignment="Center" IsVisible="{Binding IsVisibleResultado}" />
+
+                    <VerticalStackLayout IsVisible="{Binding IsVisible}" Spacing="17">
+                        <CarouselView ItemsSource="{Binding PaginasDeTopicos}" HeightRequest="150" IndicatorView="indicatorView" Loop="False">
+                            <CarouselView.ItemTemplate>
+                                <DataTemplate x:DataType="vm:TopicPage">
+                                    <HorizontalStackLayout Spacing="15" HorizontalOptions="Start" Margin="15,0" VerticalOptions="Center" BindableLayout.ItemsSource="{Binding ItensDaPagina}">
+                                        <BindableLayout.ItemTemplate>
+                                            <DataTemplate x:DataType="vm:TopicUiModel">
+                                                <VerticalStackLayout Spacing="7" WidthRequest="100">
+                                                    <Border StrokeShape="RoundRectangle 25" BackgroundColor="{Binding BackgroundColor}" HeightRequest="100" WidthRequest="100">
+                                                        <Border.GestureRecognizers>
+                                                            <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type vm:HomeViewModel}}, Path=SelecionarTopicoCommand}" CommandParameter="{Binding .}" />
+                                                        </Border.GestureRecognizers>
+                                                        <Image Source="{Binding IconSource}" HeightRequest="50" WidthRequest="50" HorizontalOptions="Center" VerticalOptions="Center"/>
+                                                    </Border>
+                                                    <Label Text="{Binding TopicData.Name}" TextColor="Black" FontSize="12" HorizontalTextAlignment="Center" />
+                                                </VerticalStackLayout>
+                                            </DataTemplate>
+                                        </BindableLayout.ItemTemplate>
+                                    </HorizontalStackLayout>
+                                </DataTemplate>
+                            </CarouselView.ItemTemplate>
+                        </CarouselView>
+                        <IndicatorView x:Name="indicatorView" IndicatorColor="#004AAD" SelectedIndicatorColor="#8EDDDE" HorizontalOptions="Center" Margin="0,10,0,0" />
+                    </VerticalStackLayout>
+
+                    <HorizontalStackLayout HorizontalOptions="Center" Spacing="15" Margin="0,5,0,5" IsVisible="{Binding IsVisible}">
+                        <Border HeightRequest="15" WidthRequest="15" StrokeShape="RoundRectangle 15" BackgroundColor="{Binding DotColorArticles}" StrokeThickness="0">
+                            <Border.GestureRecognizers>
+                                <TapGestureRecognizer Command="{Binding MudarParaArtigosCommand}" />
+                            </Border.GestureRecognizers>
+                        </Border>
+
+                        <Border HeightRequest="15" WidthRequest="15" StrokeShape="RoundRectangle 15" BackgroundColor="{Binding DotColorImages}" StrokeThickness="0">
+                            <Border.GestureRecognizers>
+                                <TapGestureRecognizer Command="{Binding MudarParaImagensCommand}" />
+                            </Border.GestureRecognizers>
+                        </Border>
+                    </HorizontalStackLayout>
+
+                    <VerticalStackLayout Spacing="20" IsVisible="{Binding IsModeArticles}">
+
+                        <Label Text="Nenhum artigo encontrado neste tópico 📄"
+                               TextColor="Gray"
+                               FontSize="16"
+                               HorizontalOptions="Center"
+                               HorizontalTextAlignment="Center"
+                               Margin="0,20,0,0"
+                               IsVisible="{Binding IsArticlesEmpty}" />
+
+                        <VerticalStackLayout BindableLayout.ItemsSource="{Binding ArtigosExibidos}">
+                            <BindableLayout.ItemTemplate>
+                                <DataTemplate x:DataType="core:Article">
+                                    <Border BackgroundColor="#8EDDDE" StrokeShape="RoundRectangle 25" WidthRequest="333" Margin="0,0,0,10">
+                                        <VerticalStackLayout Spacing="11" Padding="15">
+                                            <Label FontFamily="Gabarito"  FontSize="16" TextColor="#004AAD" FontAttributes="Bold" Text="{Binding Title}" LineBreakMode="TailTruncation"/>
+                                            <Label FontFamily="Gabarito" FontSize="12" TextColor="#000000"  Text="{Binding ContentBody}" LineBreakMode="WordWrap" />
+                                        </VerticalStackLayout>
+                                    </Border>
+                                </DataTemplate>
+                            </BindableLayout.ItemTemplate>
+                        </VerticalStackLayout>
+                    </VerticalStackLayout>
+
+                    <VerticalStackLayout Spacing="20" IsVisible="{Binding IsModeImages}">
+
+                        <Label Text="Nenhuma imagem disponível neste tópico 📷"
+                               TextColor="Gray"
+                               FontSize="16"
+                               HorizontalOptions="Center"
+                               HorizontalTextAlignment="Center"
+                               Margin="0,20,0,0"
+                               IsVisible="{Binding IsImagesEmpty}" />
+
+                        <VerticalStackLayout BindableLayout.ItemsSource="{Binding ImagensExibidas}">
+                            <BindableLayout.ItemTemplate>
+                                <DataTemplate x:DataType="core:TopicImage">
+                                    <Border StrokeShape="RoundRectangle 30" BackgroundColor="#AEEEEE" HeightRequest="400" WidthRequest="300" HorizontalOptions="Center" Margin="0,0,0,10">
+                                        <Grid RowDefinitions="*, 50">
+                                            <Image Grid.Row="0" 
+                                                   Source="{Binding ImageUrl}" 
+                                                   Aspect="AspectFill" 
+                                                   HorizontalOptions="Fill" 
+                                                   VerticalOptions="Fill"
+                                                   Margin="0,20,0,0"/>
+
+                                            <Label Grid.Row="1" Text="Veja mais" TextColor="Black" FontSize="18" HorizontalOptions="Center" VerticalOptions="Center">
+                                                <Label.GestureRecognizers>
+                                                    <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type vm:HomeViewModel}}, Path=AbrirImagemCommand}" CommandParameter="{Binding .}" />
+                                                </Label.GestureRecognizers>
+                                            </Label>
+                                        </Grid>
+                                    </Border>
+                                </DataTemplate>
+                            </BindableLayout.ItemTemplate>
+                        </VerticalStackLayout>
+                    </VerticalStackLayout>
+
+                </VerticalStackLayout>
+            </VerticalStackLayout>
+        </ScrollView>
+
+        <Grid IsVisible="{Binding IsImagePopupVisible}" BackgroundColor="#F0F8FF" HorizontalOptions="Fill" VerticalOptions="Fill" RowDefinitions="*, Auto">
+            <Grid.GestureRecognizers>
+                <TapGestureRecognizer Command="{Binding FecharImagemCommand}" />
+            </Grid.GestureRecognizers>
+
+            <ScrollView Grid.Row="0">
+                <VerticalStackLayout VerticalOptions="Center" Spacing="10" Padding="20">
+                    <Border StrokeShape="RoundRectangle 30" BackgroundColor="#AEEEEE" Padding="0">
+                        <Image Source="{Binding ImagemSelecionadaParaZoom.ImageUrl}" 
+                               Aspect="AspectFit"
+                               HeightRequest="500" 
+                               HorizontalOptions="Fill" />
+                    </Border>
+                    <Label Text="{Binding ImagemSelecionadaParaZoom.Caption}" HorizontalOptions="Center" HorizontalTextAlignment="Center" FontSize="16" FontAttributes="Bold" TextColor="#004AAD" />
+                </VerticalStackLayout>
+            </ScrollView>
+
+            <Label Grid.Row="1" Text="Clique para fechar" FontSize="16" TextColor="Black" HorizontalOptions="Center" Margin="0,0,0,30">
+                <Label.GestureRecognizers>
+                    <TapGestureRecognizer Command="{Binding FecharImagemCommand}" />
+                </Label.GestureRecognizers>
+            </Label>
+        </Grid>
+
+        <Grid BackgroundColor="#80000000" IsVisible="{Binding IsLoading}" HorizontalOptions="Fill" VerticalOptions="Fill">
+            <ActivityIndicator IsRunning="{Binding IsLoading}" Color="White" VerticalOptions="Center" HorizontalOptions="Center"/>
+        </Grid>
+
+    </Grid>
+</ContentPage>
