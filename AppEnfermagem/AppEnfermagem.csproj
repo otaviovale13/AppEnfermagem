@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
 		<TargetFrameworks>net9.0-android;net9.0-ios;net9.0-maccatalyst</TargetFrameworks>
@@ -39,22 +39,31 @@
 		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">10.0.17763.0</SupportedOSPlatformVersion>
 		<TargetPlatformMinVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">10.0.17763.0</TargetPlatformMinVersion>
 		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'tizen'">6.5</SupportedOSPlatformVersion>
+		<AndroidSigningKeyStore>chave_app.keystore</AndroidSigningKeyStore>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net9.0-android|AnyCPU'">
 	  <AndroidLinkTool>r8</AndroidLinkTool>
-	  <EnableLLVM>True</EnableLLVM>
+	  <EnableLLVM>False</EnableLLVM>
 	  <DebugSymbols>False</DebugSymbols>
 	  <AndroidKeyStore>True</AndroidKeyStore>
 	  <Debugger>Xamarin</Debugger>
+	  <RunAOTCompilation>False</RunAOTCompilation>
+	  <AndroidSigningStorePass>190226appenfermagem</AndroidSigningStorePass>
+	  <AndroidSigningKeyAlias>chave_app</AndroidSigningKeyAlias>
+	  <AndroidSigningKeyPass>190226appenfermagem</AndroidSigningKeyPass>
+	  <AndroidPackageFormat>apk</AndroidPackageFormat>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net9.0-android|AnyCPU'">
-	  <EnableLLVM>True</EnableLLVM>
+	  <EnableLLVM>False</EnableLLVM>
 	  <DebugSymbols>False</DebugSymbols>
 	  <AndroidKeyStore>True</AndroidKeyStore>
 	  <EmbedAssembliesIntoApk>True</EmbedAssembliesIntoApk>
 	  <Debugger>Xamarin</Debugger>
+	  <AndroidSigningStorePass>190226appenfermagem</AndroidSigningStorePass>
+	  <AndroidSigningKeyAlias>chave_app</AndroidSigningKeyAlias>
+	  <AndroidSigningKeyPass>190226appenfermagem</AndroidSigningKeyPass>
 	</PropertyGroup>
 
 	<ItemGroup>
