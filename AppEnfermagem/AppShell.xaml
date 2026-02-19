@@ -7,9 +7,6 @@
     Shell.FlyoutBehavior="Disabled"
     Shell.NavBarIsVisible="False"
     Title="AppEnfermagem">
-    xmlns:local="clr-namespace:AppEnfermagem.Views"
-    Shell.FlyoutBehavior="Disabled"
-    Shell.NavBarIsVisible="False">
 
     <ShellContent
         Title="Loading"
@@ -31,14 +28,15 @@
         ContentTemplate="{DataTemplate local:AdmPage}"
         Route="AdmPage" />
 
-     Title="Home"
-     ContentTemplate="{DataTemplate local:InicioPage}"
-     Route="InicioPage"/>
-
     <ShellContent
         Title="Apresentação"
         ContentTemplate="{DataTemplate local:ApresentacaoPage}"
         Route="ApresentacaoPage" />
-    
+
+    <ShellContent
+        Title="Inicio"
+        ContentTemplate="{DataTemplate local:InicioPage}"
+        Route="InicioPage" />
+
 </Shell>
 

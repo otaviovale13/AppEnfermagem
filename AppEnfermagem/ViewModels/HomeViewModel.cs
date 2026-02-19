@@ -1,10 +1,10 @@
 ﻿using AppEnfermagem.Models;
-using AppEnfermagem.Models.AppEnfermagem.Models;
 using AppEnfermagem.Services;
 using AppEnfermagem.Views;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using System.Collections.ObjectModel;
+using System.Xml.Linq;
 
 namespace AppEnfermagem.ViewModels;
 
@@ -38,6 +38,7 @@ public partial class HomeViewModel : ObservableObject
     [ObservableProperty] private bool isVisibleBotaoLimpar = false;
     [ObservableProperty] private string input;
     [ObservableProperty] private bool isAdmin;
+    [ObservableProperty] private string artigosText;
 
     // --- Funcionalidades de Abas (Texto/Imagem) ---
     [ObservableProperty] private bool isModeArticles = true;
@@ -59,6 +60,7 @@ public partial class HomeViewModel : ObservableObject
     [RelayCommand]
     public void MudarParaArtigos()
     {
+        ArtigosText = "Artigos escritos";
         IsModeArticles = true;
         IsModeImages = false;
         AtualizarCoresBolinhas();
@@ -67,6 +69,7 @@ public partial class HomeViewModel : ObservableObject
     [RelayCommand]
     public void MudarParaImagens()
     {
+        ArtigosText = "Imagens";
         IsModeArticles = false;
         IsModeImages = true;
         AtualizarCoresBolinhas();

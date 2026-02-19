@@ -99,7 +99,6 @@ public partial class LoginViewModel : ObservableObject
     [RelayCommand]
     private async Task Voltar()
     {
-        // Força a ida para a Home, garantindo que funciona sempre
         await Shell.Current.GoToAsync($"//{nameof(HomePage)}");
     }
 }

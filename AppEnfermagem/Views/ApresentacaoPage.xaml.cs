@@ -1,23 +1,26 @@
-using System;
+using AppEnfermagem.Models;
+using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
 using Microsoft.Maui.Controls;
+using System;
+using System.Threading.Tasks;
 
-namespace AppEnfermagem.Views
+namespace AppEnfermagem.Views;
+
+public partial class ApresentacaoPage : ContentPage
 {
-    public partial class ApresentacaoPage : ContentPage
+    public ApresentacaoPage()
     {
-        public ApresentacaoPage()
-        {
-            InitializeComponent();
-        }
+        InitializeComponent();
+    }
 
-        private async void SaibaMais_Clicked(object sender, EventArgs e)
-        {
-            await Shell.Current.GoToAsync("//InicioPage");
-        }
-        
-        private async void BtnComecar_Clicked(object sender, EventArgs e)
-        {
-            await Shell.Current.GoToAsync("//InicioPage");
-        }
+    private async void SaibaMais_Clicked(object sender, EventArgs e)
+    {
+        await Shell.Current.GoToAsync("//HomePage");
+    }
+
+    private async void AdminIconClick(object sender, EventArgs e)
+    {
+        await Shell.Current.GoToAsync($"//{nameof(LoginPage)}");
     }
 }

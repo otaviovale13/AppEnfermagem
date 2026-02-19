@@ -2,82 +2,71 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="AppEnfermagem.Views.ApresentacaoPage"
-             BackgroundColor="#f8f8f8"
+             BackgroundColor="#F8F8F8"
              NavigationPage.HasNavigationBar="False">
 
-    <Grid>
+    <Grid RowDefinitions="Auto, *" Margin="20">
 
-        <!-- TOPO MENU -->
-        <HorizontalStackLayout
-            Spacing="15"
-            Padding="20,20,0,0"
-            HorizontalOptions="Start"
-            VerticalOptions="Start">
-
-            <Image Source="bars_png.png"
-                   HeightRequest="28"
-                   WidthRequest="28" />
-
-            <Image Source="admin_png.png"
-                   HeightRequest="28"
-                   WidthRequest="28" />
+        <HorizontalStackLayout Grid.Row="0" HorizontalOptions="End">
+            <ImageButton Source="admin_png.png"
+                         HeightRequest="30"
+                         WidthRequest="30"
+                         BackgroundColor="Transparent"
+                         Clicked="AdminIconClick"/>
         </HorizontalStackLayout>
 
-        <!-- CONTEÚDO CENTRAL -->
-        <VerticalStackLayout
-            Spacing="25"
-            HorizontalOptions="Center"
-            VerticalOptions="Center"
-            MaximumWidthRequest="480"
-            Padding="20,80,20,40">
+        <ScrollView Grid.Row="1">
+            <VerticalStackLayout Spacing="25"
+                                 HorizontalOptions="Center"
+                                 VerticalOptions="Center">
 
-            <!-- LOGO -->
-            <Grid WidthRequest="220"
-                  HeightRequest="220"
-                  HorizontalOptions="Center">
+                <Border Stroke="#1a5276"
+                        StrokeThickness="3"
+                        StrokeShape="RoundRectangle 110"
+                        HeightRequest="220"
+                        WidthRequest="220"
+                        HorizontalOptions="Center"
+                        BackgroundColor="White">
 
-                <Image Source="logo.jpg"
-                       Aspect="AspectFill"
-                       WidthRequest="220"
-                       HeightRequest="220">
-                    <Image.Clip>
-                        <EllipseGeometry Center="110,110"
-                      RadiusX="110"
-                      RadiusY="110" />
-                    </Image.Clip>
-                </Image>
+                    <Image Source="logo.jpg"
+                           Aspect="AspectFill"
+                           HorizontalOptions="Fill"
+                           VerticalOptions="Fill"/>
+                </Border>
 
-                <Ellipse Stroke="#1a5276"
-                         StrokeThickness="2"
-                         Fill="Transparent"/>
-            </Grid>
+                <VerticalStackLayout Spacing="10">
+                    <Label Text="Apoio à prática assistencial"
+                           FontSize="18"
+                           FontAttributes="Italic"
+                           TextColor="#1a5276"
+                           HorizontalTextAlignment="Center"
+                           Opacity="0.8"/>
 
-            <!-- TEXTO 1 -->
-            <Label Text="Apoio à prática assistencial"
-                   FontSize="20"
-                   FontAttributes="Italic"
-                   TextColor="#004AAD"
-                   HorizontalTextAlignment="Center" />
+                    <Label Text="Conhecimento e prática na palma da mão. Seu suporte diário em Enfermagem"
+                           FontSize="20"
+                           FontAttributes="Bold"
+                           TextColor="#004AAD"
+                           HorizontalTextAlignment="Center"
+                           LineBreakMode="WordWrap"/>
+                </VerticalStackLayout>
 
-            <!-- TEXTO 2 -->
-            <Label Text="Conhecimento e prática na palma da mão. Seu suporte diário em Enfermagem"
-                   FontSize="22"
-                   TextColor="#004AAD"
-                   HorizontalTextAlignment="Center" />
+                <Button Text="Saiba mais"
+                        BackgroundColor="#004AAD"
+                        TextColor="White"
+                        FontSize="16"
+                        FontAttributes="Bold"
+                        CornerRadius="25"
+                        HeightRequest="50"
+                        WidthRequest="200"
+                        Margin="0,20,0,0"
+                        HorizontalOptions="Center"
+                        Clicked="SaibaMais_Clicked">
+                    <Button.Shadow>
+                        <Shadow Brush="Black" Offset="0,4" Radius="5" Opacity="0.2"/>
+                    </Button.Shadow>
+                </Button>
 
-            <!-- BOTÃO -->
-            <Button Text="Saiba mais"
-                    BackgroundColor="#004AAD"
-                    TextColor="White"
-                    CornerRadius="25"
-                    HeightRequest="48"
-                    WidthRequest="180"
-                    HorizontalOptions="Center"
-                    Margin="0,60,0,0"
-                    Clicked="SaibaMais_Clicked"/>
-
-        </VerticalStackLayout>
-
+            </VerticalStackLayout>
+        </ScrollView>
     </Grid>
-
 </ContentPage>

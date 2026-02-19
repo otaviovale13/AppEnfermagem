@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Collections.Generic;
 
 namespace AppEnfermagem.Models;
 
@@ -21,8 +22,10 @@ public class Topic
 
     public int DisplayOrder { get; set; } = 0;
 
-    public virtual ICollection<Article> Articles { get; set; } = new List<Article>();
-    // Propriedade de Navegação: Um Tópico tem várias Imagens
+    // Mantém uma única definição para Images para evitar ambiguidade (CS0229).
+    // Uso ICollection<T> é preferível para compatibilidade com EF e flexibilidade.
     public virtual ICollection<TopicImage> Images { get; set; } = new List<TopicImage>();
-    public List<TopicImage> Images { get; set; } = new();
+
+    // Mantém Articles como colecção virtual para EF (se aplicável).
+    public virtual ICollection<Article> Articles { get; set; } = new List<Article>();
 }

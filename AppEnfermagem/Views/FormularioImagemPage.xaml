@@ -2,40 +2,132 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:converters="clr-namespace:AppEnfermagem.Converters"
+             xmlns:vm="clr-namespace:AppEnfermagem.ViewModels"
              x:Class="AppEnfermagem.Views.FormularioImagemPage"
-             Title="FormularioImagemPage">
+             Title="Gerenciar Imagem"
+             BackgroundColor="#F8F8F8">
+
     <ContentPage.Resources>
         <ResourceDictionary>
             <converters:IdToTextConverter x:Key="IdToTextConverter" />
         </ResourceDictionary>
     </ContentPage.Resources>
+
     <Grid>
-        <ScrollView Padding="20">
-            <VerticalStackLayout Spacing="15">
-                <Label Text="Vincular ao Tópico" FontAttributes="Bold" />
-                <Picker ItemsSource="{Binding ListaTopicos}" 
-                        ItemDisplayBinding="{Binding Name}"
-                        SelectedItem="{Binding TopicoSelecionado}" />
+        <ScrollView Padding="25">
+            <VerticalStackLayout Spacing="20">
 
-                <Label Text="URL da Imagem" FontAttributes="Bold" />
-                <Entry Text="{Binding NovaImagem.ImageUrl}" Placeholder="https://..." />
+                <Label Text="Vincular ao Tópico" 
+                       TextColor="#333333"
+                       FontSize="16"
+                       FontAttributes="Bold"
+                       Margin="5,0"/>
 
-                <Label Text="Legenda (Opcional)" FontAttributes="Bold" />
-                <Entry Text="{Binding NovaImagem.Caption}" />
+                <Border Stroke="#004AAD"
+                        StrokeThickness="2"
+                        BackgroundColor="White"
+                        Padding="15,0"
+                        StrokeShape="RoundRectangle 15"
+                        HeightRequest="50">
+                    <Grid ColumnDefinitions="*, Auto">
+                        <Picker Grid.Column="0"
+                                ItemsSource="{Binding ListaTopicos}" 
+                                ItemDisplayBinding="{Binding Name}"
+                                SelectedItem="{Binding TopicoSelecionado}"
+                                TextColor="Black"
+                                Title="Selecione um tópico"
+                                TitleColor="Gray"
+                                FontSize="15"
+                                VerticalOptions="Center"
+                                BackgroundColor="Transparent"/>
+
+                        <Image Grid.Column="1" 
+                               Source="pencil_icon.png" 
+                               HeightRequest="20" 
+                               WidthRequest="20"
+                               VerticalOptions="Center"/>
+                    </Grid>
+                </Border>
+
+                <Label Text="URL da Imagem" 
+                       TextColor="#333333"
+                       FontSize="16"
+                       FontAttributes="Bold"
+                       Margin="5,10,5,0"/>
+
+                <Border Stroke="#004AAD"
+                        StrokeThickness="2"
+                        BackgroundColor="White"
+                        Padding="15,0"
+                        StrokeShape="RoundRectangle 15"
+                        HeightRequest="50">
+                    <Grid ColumnDefinitions="*, Auto">
+                        <Entry Grid.Column="0"
+                               Text="{Binding NovaImagem.ImageUrl}" 
+                               Placeholder="https://exemplo.com/imagem.png"
+                               PlaceholderColor="Gray"
+                               TextColor="Black"
+                               FontSize="15"
+                               VerticalOptions="Center"
+                               BackgroundColor="Transparent"/>
+
+                        <Image Grid.Column="1" 
+                               Source="pencil_icon.png" 
+                               HeightRequest="20" 
+                               WidthRequest="20"
+                               VerticalOptions="Center"/>
+                    </Grid>
+                </Border>
+
+                <Label Text="Legenda (Opcional)" 
+                       TextColor="#333333"
+                       FontSize="16"
+                       FontAttributes="Bold"
+                       Margin="5,10,5,0"/>
+
+                <Border Stroke="#004AAD"
+                        StrokeThickness="2"
+                        BackgroundColor="White"
+                        Padding="15,0"
+                        StrokeShape="RoundRectangle 15"
+                        HeightRequest="50">
+                    <Grid ColumnDefinitions="*, Auto">
+                        <Entry Grid.Column="0"
+                               Text="{Binding NovaImagem.Caption}" 
+                               Placeholder="Digite uma legenda..."
+                               PlaceholderColor="Gray"
+                               TextColor="Black"
+                               FontSize="15"
+                               VerticalOptions="Center"
+                               BackgroundColor="Transparent"/>
+
+                        <Image Grid.Column="1" 
+                               Source="pencil_icon.png" 
+                               HeightRequest="20" 
+                               WidthRequest="20"
+                               VerticalOptions="Center"/>
+                    </Grid>
+                </Border>
 
                 <Button Text="{Binding NovaImagem.ImageId, Converter={StaticResource IdToTextConverter}}" 
-        Command="{Binding SalvarImagemCommand}"
-        BackgroundColor="#004AAD"
-        TextColor="White"
-        FontAttributes="Bold"
-        CornerRadius="25"
-        HeightRequest="55"
-        Margin="0,20" />
+                        Command="{Binding SalvarImagemCommand}"
+                        BackgroundColor="#004AAD"
+                        TextColor="White"
+                        FontAttributes="Bold"
+                        FontSize="16"
+                        CornerRadius="30"
+                        HeightRequest="55"
+                        Margin="0,30,0,20">
+                    <Button.Shadow>
+                        <Shadow Brush="Black" Offset="0,5" Radius="10" Opacity="0.1"/>
+                    </Button.Shadow>
+                </Button>
+
             </VerticalStackLayout>
         </ScrollView>
 
         <Grid BackgroundColor="#80000000" IsVisible="{Binding IsLoading}">
-            <ActivityIndicator IsRunning="{Binding IsLoading}" Color="White" VerticalOptions="Center" />
+            <ActivityIndicator IsRunning="{Binding IsLoading}" Color="White" VerticalOptions="Center" HorizontalOptions="Center" />
         </Grid>
     </Grid>
 </ContentPage>

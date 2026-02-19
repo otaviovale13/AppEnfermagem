@@ -1,4 +1,5 @@
 ﻿using AppEnfermagem.Services;
+using AppEnfermagem.ViewModels;
 using AppEnfermagem.Views;
 using CommunityToolkit.Maui;
 using Microsoft.Extensions.Logging;

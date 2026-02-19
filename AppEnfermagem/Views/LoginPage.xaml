@@ -2,96 +2,118 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="AppEnfermagem.Views.LoginPage"
-             Title="LoginPage"
-             BackgroundColor="#F8F8F8">
-    
-    <ScrollView VerticalOptions="FillAndExpand">
-        <Grid VerticalOptions="CenterAndExpand" Padding="20">
+             Title="Login"
+             BackgroundColor="#F8F8F8"
+             NavigationPage.HasNavigationBar="False">
 
-            <Border BackgroundColor="#004AAD" 
-                StrokeShape="RoundRectangle 25"
-                StrokeThickness="0"
-                Padding="24, 30"
-                VerticalOptions="Center">
+    <Grid>
 
-                <VerticalStackLayout Spacing="15">
+        <ScrollView VerticalOptions="Fill" HorizontalOptions="Fill">
+            <Grid RowDefinitions="*" ColumnDefinitions="*" Padding="20">
 
-                    <Label Text="Bem-vindo de Volta!"
-                       TextColor="#F8F8F8"
-                       FontSize="20"
-                       FontAttributes="Bold"
-                       HorizontalOptions="Center" />
+                <Border BackgroundColor="#004AAD" 
+                        StrokeShape="RoundRectangle 25"
+                        StrokeThickness="0"
+                        Padding="30"
+                        VerticalOptions="Center"
+                        HorizontalOptions="Center"
+                        WidthRequest="350">
+                    <Border.Shadow>
+                        <Shadow Brush="Black" Offset="0,10" Radius="20" Opacity="0.2"/>
+                    </Border.Shadow>
 
-                    <Label Text="Digite sua senha para continuar!"
-                       TextColor="#F8F8F8"
-                       FontSize="12"
-                       HorizontalOptions="Center"
-                       HorizontalTextAlignment="Center"
-                       Margin="0,0,0,10"/>
+                    <VerticalStackLayout Spacing="20">
 
-                    <Border Stroke="#F8F8F8"
-                            StrokeThickness="3"
-                            StrokeShape="RoundRectangle 50"
-                            BackgroundColor="Transparent"
-                            HeightRequest="45"
-                            Padding="10,0"
-                            Margin="0,0,0,15">
-                                            <Entry Placeholder="Usuário"
-                               PlaceholderColor="#000000"
-                               TextColor="#E1E1E6"
-                               VerticalOptions="Center"
-                               Text="{Binding Usuario}" />
-                    </Border>
+                        <VerticalStackLayout Spacing="5">
+                            <Label Text="Bem-vindo de Volta!"
+                                   TextColor="White"
+                                   FontSize="22"
+                                   FontAttributes="Bold"
+                                   HorizontalOptions="Center" />
 
-                    <Border Stroke="#F8F8F8"
-                        StrokeThickness="3"
-                        StrokeShape="RoundRectangle 50"
-                        BackgroundColor="Transparent"
-                        HeightRequest="45"
-                        Padding="10,0">
-                        <Entry Placeholder="Senha"
-                           IsPassword="True"
-                           PlaceholderColor="#000000"
-                           TextColor="#E1E1E6"
-                           VerticalOptions="Center"
-                           Text="{Binding Senha}" />
-                    </Border>
+                            <Label Text="Acesse sua conta para continuar"
+                                   TextColor="#A0C4FF"
+                                   FontSize="14"
+                                   HorizontalOptions="Center"
+                                   HorizontalTextAlignment="Center"/>
+                        </VerticalStackLayout>
 
-                    <HorizontalStackLayout HorizontalOptions="Center" Spacing="20">
-                        <Button Text="Voltar"
-                                TextColor="#8EDDDE"
-                                BackgroundColor="Transparent"
-                                BorderColor="#8EDDDE"
-                                BorderWidth="3"
-                                FontSize="15"
-                                CornerRadius="20"
-                                FontAttributes="Bold"
-                                HeightRequest="45"
-                                WidthRequest="150"
-                                HorizontalOptions="Center"
-                                Margin="0,15,0,0"
-                                Command="{Binding VoltarCommand}" />
+                        <VerticalStackLayout Spacing="15" Margin="0,10,0,10">
 
-                        <Button Text="Entrar"
-                                TextColor="#004AAD"
-                                BackgroundColor="#8EDDDE"
-                                BorderColor="Transparent"
-                                BorderWidth="1"
-                                FontSize="15"
-                                CornerRadius="20"
-                                FontAttributes="Bold"
-                                HeightRequest="45"
-                                WidthRequest="150"
-                                HorizontalOptions="Center"
-                                Margin="0,15,0,0"
-                                Command="{Binding LoginCommand}" />
-                    </HorizontalStackLayout>
-                </VerticalStackLayout>
-            </Border>
-            
-            <Grid BackgroundColor="#80000000" IsVisible="{Binding IsLoading}" HorizontalOptions="Fill" VerticalOptions="Fill">
-                <ActivityIndicator IsRunning="{Binding IsLoading}" Color="White" VerticalOptions="Center" HorizontalOptions="Center"/>
+                            <Border Stroke="White"
+                                    StrokeThickness="1"
+                                    StrokeShape="RoundRectangle 25"
+                                    BackgroundColor="#1A5AA6"
+                                    HeightRequest="50"
+                                    Padding="15,0">
+                                <Entry Placeholder="Usuário"
+                                       PlaceholderColor="#B0C4DE"
+                                       TextColor="White"
+                                       VerticalOptions="Center"
+                                       Text="{Binding Usuario}" />
+                            </Border>
+
+                            <Border Stroke="White"
+                                    StrokeThickness="1"
+                                    StrokeShape="RoundRectangle 25"
+                                    BackgroundColor="#1A5AA6"
+                                    HeightRequest="50"
+                                    Padding="15,0">
+                                <Entry Placeholder="Senha"
+                                       IsPassword="True"
+                                       PlaceholderColor="#B0C4DE"
+                                       TextColor="White"
+                                       VerticalOptions="Center"
+                                       Text="{Binding Senha}" />
+                            </Border>
+                        </VerticalStackLayout>
+
+                        <Grid ColumnDefinitions="*,*" ColumnSpacing="15" Margin="0,10,0,0">
+
+                            <Button Grid.Column="0"
+                                    Text="Voltar"
+                                    TextColor="#8EDDDE"
+                                    BackgroundColor="Transparent"
+                                    BorderColor="#8EDDDE"
+                                    BorderWidth="2"
+                                    FontSize="14"
+                                    CornerRadius="25"
+                                    FontAttributes="Bold"
+                                    HeightRequest="50"
+                                    Command="{Binding VoltarCommand}" />
+
+                            <Button Grid.Column="1"
+                                    Text="Entrar"
+                                    TextColor="#004AAD"
+                                    BackgroundColor="#8EDDDE"
+                                    FontSize="14"
+                                    CornerRadius="25"
+                                    FontAttributes="Bold"
+                                    HeightRequest="50"
+                                    Command="{Binding LoginCommand}">
+                                <Button.Shadow>
+                                    <Shadow Brush="Black" Offset="0,2" Radius="5" Opacity="0.2"/>
+                                </Button.Shadow>
+                            </Button>
+                        </Grid>
+
+                    </VerticalStackLayout>
+                </Border>
             </Grid>
+        </ScrollView>
+
+        <Grid BackgroundColor="#99000000" 
+              IsVisible="{Binding IsLoading}" 
+              HorizontalOptions="Fill" 
+              VerticalOptions="Fill"
+              ZIndex="99">
+            <ActivityIndicator IsRunning="{Binding IsLoading}" 
+                               Color="#8EDDDE" 
+                               VerticalOptions="Center" 
+                               HorizontalOptions="Center"
+                               HeightRequest="50"
+                               WidthRequest="50"/>
         </Grid>
-    </ScrollView>
+
+    </Grid>
 </ContentPage>

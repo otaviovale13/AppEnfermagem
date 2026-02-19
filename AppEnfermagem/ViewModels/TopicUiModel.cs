@@ -1,5 +1,6 @@
 ﻿using AppEnfermagem.Models;
 using CommunityToolkit.Mvvm.ComponentModel;
+using System.Security.Cryptography;
 
 namespace AppEnfermagem.ViewModels;
 
@@ -22,8 +23,10 @@ public partial class TopicUiModel : ObservableObject
     {
         get
         {
-            if (string.IsNullOrEmpty(TopicData.IconPath)) return "heart.png";
-            return TopicData.IconPath;
+            //if (string.IsNullOrEmpty(TopicData.IconPath)) return "heart.png";
+            //return TopicData.IconPath;
+
+            return "heart.png";
         }
     }
 }
