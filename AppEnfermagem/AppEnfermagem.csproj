@@ -80,6 +80,15 @@
 	  <MauiXaml Update="Views\AdmPage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
+	  <MauiXaml Update="Views\FormularioArtigoPage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="Views\FormularioImagemPage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="Views\FormularioTopicoPage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
 	  <MauiXaml Update="Views\HomePage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
@@ -98,6 +107,12 @@
 	  <MauiXaml Update="Views\ApresentacaoPage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
+	</ItemGroup>
+
+	<ItemGroup>
+	  <None Update="Views\FormularioTopicoPage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </None>
 	</ItemGroup>
 
 </Project>

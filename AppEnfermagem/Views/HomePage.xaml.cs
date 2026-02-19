@@ -10,12 +10,17 @@ public partial class HomePage : ContentPage
 		BindingContext = viewModel;
     }
 
-	protected override async void OnAppearing()
-	{
-		base.OnAppearing();
-		if (BindingContext is HomeViewModel viewModel)
-		{
-			await viewModel.InicializarTela();
-		}
+    protected override async void OnAppearing()
+    {
+        base.OnAppearing();
+
+        if (BindingContext is HomeViewModel vm)
+        {
+            // 1. Atualiza se é admin ou não
+            vm.VerificarStatusAdmin();
+
+            // 2. Recarrega os dados (caso tenha editado algo)
+            await vm.InicializarTela();
+        }
     }
 }

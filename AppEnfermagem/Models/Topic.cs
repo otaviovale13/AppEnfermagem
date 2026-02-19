@@ -22,5 +22,7 @@ public class Topic
     public int DisplayOrder { get; set; } = 0;
 
     public virtual ICollection<Article> Articles { get; set; } = new List<Article>();
+    // Propriedade de Navegação: Um Tópico tem várias Imagens
+    public virtual ICollection<TopicImage> Images { get; set; } = new List<TopicImage>();
     public List<TopicImage> Images { get; set; } = new();
 }
