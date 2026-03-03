@@ -7,14 +7,6 @@
 
     <Grid RowDefinitions="Auto, *" Margin="20">
 
-        <HorizontalStackLayout Grid.Row="0" HorizontalOptions="End">
-            <ImageButton Source="admin_png.png"
-                         HeightRequest="30"
-                         WidthRequest="30"
-                         BackgroundColor="Transparent"
-                         Clicked="AdminIconClick"/>
-        </HorizontalStackLayout>
-
         <ScrollView Grid.Row="1">
             <VerticalStackLayout Spacing="25"
                                  HorizontalOptions="Center"

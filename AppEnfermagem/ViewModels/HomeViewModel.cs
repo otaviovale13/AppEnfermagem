@@ -28,6 +28,7 @@ public partial class HomeViewModel : ObservableObject
 
     private List<TopicUiModel> _todosTopicos = new();
     private List<Article> _todosArtigosDaApi = new();
+    private List<TopicImage> _todasImagensDaApi = new();
     private TopicUiModel _topicoSelecionadoAtual;
 
     // --- Propriedades de Visibilidade e UI ---
@@ -39,6 +40,7 @@ public partial class HomeViewModel : ObservableObject
     [ObservableProperty] private string input;
     [ObservableProperty] private bool isAdmin;
     [ObservableProperty] private string artigosText;
+    [ObservableProperty] private bool artigosTextVisiblie = true;
 
     // --- Funcionalidades de Abas (Texto/Imagem) ---
     [ObservableProperty] private bool isModeArticles = true;
@@ -60,18 +62,18 @@ public partial class HomeViewModel : ObservableObject
     [RelayCommand]
     public void MudarParaArtigos()
     {
-        ArtigosText = "Artigos escritos";
+        ArtigosText = "Artigos escritos"; // Volta o título original
         IsModeArticles = true;
-        IsModeImages = false;
+        IsModeImages = false; // Esconde as imagens para mostrar só texto
         AtualizarCoresBolinhas();
     }
 
     [RelayCommand]
     public void MudarParaImagens()
     {
-        ArtigosText = "Imagens";
-        IsModeArticles = false;
-        IsModeImages = true;
+        ArtigosText = "Imagens"; // Muda o título
+        IsModeArticles = false; // Esconde os textos
+        IsModeImages = true; // Mostra só as imagens
         AtualizarCoresBolinhas();
     }
 
@@ -138,43 +140,125 @@ public partial class HomeViewModel : ObservableObject
     [RelayCommand]
     public void Pesquisar()
     {
-        MudarParaArtigos(); // Pesquisa sempre foca em texto
-        ArtigosExibidos.Clear();
         var inputPesquisa = Input?.Trim();
 
+        // 1. PESQUISA VAZIA -> MOSTRA TODO O CATÁLOGO
         if (string.IsNullOrEmpty(inputPesquisa))
         {
+            ArtigosText = "Todos os artigos";
+            ArtigosTextVisiblie = true;
+
+            IsModeArticles = true;
+            IsModeImages = true;
+            DotColorArticles = Color.FromArgb("#004AAD");
+            DotColorImages = Color.FromArgb("#004AAD");
+
+            ArtigosExibidos.Clear();
+            ImagensExibidas.Clear();
+
+            foreach (var artigo in _todosArtigosDaApi) ArtigosExibidos.Add(artigo);
+            var imagensOrdenadas = _todasImagensDaApi.OrderBy(x => x.DisplayOrder);
+            foreach (var img in imagensOrdenadas) ImagensExibidas.Add(img);
+
             IsVisible = false;
             IsVisibleBotaoLimpar = true;
-            foreach (var artigo in _todosArtigosDaApi) ArtigosExibidos.Add(artigo);
+
+            IsVisibleArtigos = true;
+            IsVisibleResultado = false;
+            IsArticlesEmpty = false;
+            IsImagesEmpty = false;
+
+            return;
+        }
+
+        // --- 2. PESQUISA COM TEXTO ---
+        ArtigosExibidos.Clear();
+        ImagensExibidas.Clear();
+
+        // Filtra Artigos
+        var filtradosArtigos = _todosArtigosDaApi
+            .Where(a => !string.IsNullOrEmpty(a.Title) && a.Title.Contains(inputPesquisa, StringComparison.OrdinalIgnoreCase))
+            .ToList();
+
+        // Filtra Imagens
+        var filtradasImagens = _todasImagensDaApi
+            .Where(img => !string.IsNullOrEmpty(img.Caption) && img.Caption.Contains(inputPesquisa, StringComparison.OrdinalIgnoreCase))
+            .ToList();
+
+        IsVisible = false;
+        IsVisibleBotaoLimpar = true;
+
+        bool achouAlgo = filtradosArtigos.Any() || filtradasImagens.Any();
+
+        IsVisibleResultado = !achouAlgo;
+        ArtigosTextVisiblie = achouAlgo;
+
+        foreach (var artigo in filtradosArtigos) ArtigosExibidos.Add(artigo);
+        foreach (var img in filtradasImagens) ImagensExibidas.Add(img);
+
+        // --- A SOLUÇÃO DOS AVISOS CINZAS ---
+        if (!achouAlgo)
+        {
+            // Se a pesquisa não achou absolutamente nada, nós escondemos os textos cinzas
+            // para que apenas o "Nada foi encontrado!" vermelho apareça na tela.
+            IsArticlesEmpty = false;
+            IsImagesEmpty = false;
         }
         else
         {
-            var filtrados = _todosArtigosDaApi.Where(a => a.Title != null && a.Title.Contains(inputPesquisa, StringComparison.OrdinalIgnoreCase)).ToList();
-            IsVisible = false;
-            IsVisibleBotaoLimpar = true;
-            IsVisibleArtigos = filtrados.Any();
-            IsVisibleResultado = !filtrados.Any();
-            foreach (var artigo in filtrados) ArtigosExibidos.Add(artigo);
+            // Se achou, por exemplo, imagens mas nenhum artigo, mantemos a lógica 
+            // para que a aba vazia mostre seu texto caso o usuário navegue até ela.
+            IsArticlesEmpty = !filtradosArtigos.Any();
+            IsImagesEmpty = !filtradasImagens.Any();
         }
-        IsArticlesEmpty = ArtigosExibidos.Count == 0;
+
+        // --- A MÁGICA DA EXIBIÇÃO ---
+        if (filtradosArtigos.Any() && filtradasImagens.Any())
+        {
+            ArtigosText = "Resultados da pesquisa";
+            IsModeArticles = true;
+            IsModeImages = true;
+            DotColorArticles = Color.FromArgb("#004AAD");
+            DotColorImages = Color.FromArgb("#004AAD");
+        }
+        else if (filtradosArtigos.Any())
+        {
+            MudarParaArtigos();
+            ArtigosText = "Resultados da pesquisa";
+        }
+        else if (filtradasImagens.Any())
+        {
+            MudarParaImagens();
+            ArtigosText = "Resultados da pesquisa";
+        }
     }
 
     [RelayCommand]
     public void LimparPesquisa()
     {
         ArtigosExibidos.Clear();
+        ImagensExibidas.Clear();
+
         Input = string.Empty;
 
         if (_topicoSelecionadoAtual != null)
+        {
             SelecionarTopico(_topicoSelecionadoAtual);
+        }
         else
+        {
             foreach (var artigo in _todosArtigosDaApi) ArtigosExibidos.Add(artigo);
+            foreach (var imagem in _todasImagensDaApi) ImagensExibidas.Add(imagem);
+        }
 
         IsVisible = true;
         IsVisibleArtigos = true;
         IsVisibleResultado = false;
         IsVisibleBotaoLimpar = false;
+
+        // GARANTE QUE O TÍTULO VOLTE A APARECER AO LIMPAR
+        ArtigosTextVisiblie = true;
+
         IsArticlesEmpty = ArtigosExibidos.Count == 0;
     }
     #endregion
@@ -186,18 +270,37 @@ public partial class HomeViewModel : ObservableObject
         {
             IsLoading = true;
             var data = await _contentService.ObterTopicosAsync();
-            PaginasDeTopicos.Clear(); _todosTopicos.Clear(); _todosArtigosDaApi.Clear();
+
+            PaginasDeTopicos.Clear();
+            _todosTopicos.Clear();
+            _todosArtigosDaApi.Clear();
+            _todasImagensDaApi.Clear();
 
             if (data != null)
             {
-                if (data.Artigos != null) _todosArtigosDaApi.AddRange(data.Artigos);
+                if (data.Artigos != null)
+                    _todosArtigosDaApi.AddRange(data.Artigos);
+
                 if (data.Topicos != null)
                 {
-                    foreach (var t in data.Topicos) _todosTopicos.Add(new TopicUiModel(t));
+                    foreach (var t in data.Topicos)
+                    {
+                        _todosTopicos.Add(new TopicUiModel(t));
+
+                        if (t.Images != null)
+                        {
+                            _todasImagensDaApi.AddRange(t.Images);
+                        }
+                    }
+
                     for (int i = 0; i < _todosTopicos.Count; i += 3)
                         PaginasDeTopicos.Add(new TopicPage(_todosTopicos.Skip(i).Take(3)));
 
-                    if (_todosTopicos.Any()) SelecionarTopico(_todosTopicos[0]);
+                    // A MÁGICA AQUI: Seleciona automaticamente o primeiro tópico (ex: Primeiros Socorros)
+                    if (_todosTopicos.Any())
+                    {
+                        SelecionarTopico(_todosTopicos[0]);
+                    }
                 }
             }
         }

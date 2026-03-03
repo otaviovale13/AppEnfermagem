@@ -23,10 +23,8 @@ public partial class TopicUiModel : ObservableObject
     {
         get
         {
-            //if (string.IsNullOrEmpty(TopicData.IconPath)) return "heart.png";
-            //return TopicData.IconPath;
-
-            return "heart.png";
+            if (string.IsNullOrEmpty(TopicData.IconPath)) return "heart.png";
+            return TopicData.IconPath;
         }
     }
 }
