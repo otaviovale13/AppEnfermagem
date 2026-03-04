@@ -4,7 +4,6 @@ using AppEnfermagem.Views;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using System.Collections.ObjectModel;
-using System.Xml.Linq;
 
 namespace AppEnfermagem.ViewModels;
 
@@ -38,7 +37,6 @@ public partial class HomeViewModel : ObservableObject
     [ObservableProperty] private bool isVisibleResultado = false;
     [ObservableProperty] private bool isVisibleBotaoLimpar = false;
     [ObservableProperty] private string input;
-    [ObservableProperty] private bool isAdmin;
     [ObservableProperty] private string artigosText;
     [ObservableProperty] private bool artigosTextVisiblie = true;
 
@@ -55,8 +53,6 @@ public partial class HomeViewModel : ObservableObject
     [ObservableProperty] private TopicImage imagemSelecionadaParaZoom;
 
     public HomeViewModel(IContentService contentService) => _contentService = contentService;
-
-    public void VerificarStatusAdmin() => IsAdmin = !string.IsNullOrEmpty(Preferences.Get("UserId", null));
 
     #region NAVEGAÇÃO E MODO
     [RelayCommand]
@@ -104,6 +100,44 @@ public partial class HomeViewModel : ObservableObject
     public async Task Voltar()
     {
         await Shell.Current.GoToAsync($"//{nameof(OpcoesPage)}");
+    }
+
+    [RelayCommand]
+    public async Task BaixarImagem()
+    {
+        if (ImagemSelecionadaParaZoom == null || string.IsNullOrEmpty(ImagemSelecionadaParaZoom.ImageUrl))
+            return;
+
+        try
+        {
+            IsLoading = true;
+
+            // 1. Faz o download da imagem da internet
+            using var httpClient = new HttpClient();
+            var imageBytes = await httpClient.GetByteArrayAsync(ImagemSelecionadaParaZoom.ImageUrl);
+
+            // 2. Cria um ficheiro temporário no telemóvel
+            string extensao = ImagemSelecionadaParaZoom.ImageUrl.EndsWith(".png") ? ".png" : ".jpg";
+            string fileName = $"enfermagem_{DateTime.Now:yyyyMMdd_HHmmss}{extensao}";
+            string localFilePath = Path.Combine(FileSystem.CacheDirectory, fileName);
+
+            File.WriteAllBytes(localFilePath, imageBytes);
+
+            // 3. Abre o menu nativo do telemóvel para "Guardar na Galeria" ou "Compartilhar"
+            await Share.Default.RequestAsync(new ShareFileRequest
+            {
+                Title = "Guardar ou Compartilhar Imagem",
+                File = new ShareFile(localFilePath)
+            });
+        }
+        catch (Exception)
+        {
+            await App.Current.MainPage.DisplayAlert("Erro", "Não foi possível transferir a imagem. Verifique a sua ligação.", "OK");
+        }
+        finally
+        {
+            IsLoading = false;
+        }
     }
     #endregion
 
@@ -202,23 +236,17 @@ public partial class HomeViewModel : ObservableObject
         foreach (var artigo in filtradosArtigos) ArtigosExibidos.Add(artigo);
         foreach (var img in filtradasImagens) ImagensExibidas.Add(img);
 
-        // --- A SOLUÇÃO DOS AVISOS CINZAS ---
         if (!achouAlgo)
         {
-            // Se a pesquisa não achou absolutamente nada, nós escondemos os textos cinzas
-            // para que apenas o "Nada foi encontrado!" vermelho apareça na tela.
             IsArticlesEmpty = false;
             IsImagesEmpty = false;
         }
         else
         {
-            // Se achou, por exemplo, imagens mas nenhum artigo, mantemos a lógica 
-            // para que a aba vazia mostre seu texto caso o usuário navegue até ela.
             IsArticlesEmpty = !filtradosArtigos.Any();
             IsImagesEmpty = !filtradasImagens.Any();
         }
 
-        // --- A MÁGICA DA EXIBIÇÃO ---
         if (filtradosArtigos.Any() && filtradasImagens.Any())
         {
             ArtigosText = "Resultados da pesquisa";
@@ -261,15 +289,13 @@ public partial class HomeViewModel : ObservableObject
         IsVisibleArtigos = true;
         IsVisibleResultado = false;
         IsVisibleBotaoLimpar = false;
-
-        // GARANTE QUE O TÍTULO VOLTE A APARECER AO LIMPAR
         ArtigosTextVisiblie = true;
 
         IsArticlesEmpty = ArtigosExibidos.Count == 0;
     }
     #endregion
 
-    #region CRUD E ADMINISTRAÇÃO
+    #region INICIALIZAÇÃO E CARREGAMENTO
     public async Task InicializarTela()
     {
         try
@@ -302,7 +328,6 @@ public partial class HomeViewModel : ObservableObject
                     for (int i = 0; i < _todosTopicos.Count; i += 3)
                         PaginasDeTopicos.Add(new TopicPage(_todosTopicos.Skip(i).Take(3)));
 
-                    // A MÁGICA AQUI: Seleciona automaticamente o primeiro tópico (ex: Primeiros Socorros)
                     if (_todosTopicos.Any())
                     {
                         SelecionarTopico(_todosTopicos[0]);
@@ -312,101 +337,5 @@ public partial class HomeViewModel : ObservableObject
         }
         finally { IsLoading = false; }
     }
-
-    [RelayCommand]
-    private async Task AdminIconClick()
-    {
-        if (IsAdmin)
-        {
-            if (await Shell.Current.DisplayAlert("Logout", "Deseja sair?", "Sim", "Não"))
-            {
-                Preferences.Clear(); IsAdmin = false; await InicializarTela();
-            }
-        }
-        else await Shell.Current.GoToAsync($"//{nameof(LoginPage)}");
-    }
-
-    [RelayCommand]
-    public async Task SelecionarTipoPostagem()
-    {
-        string acao = await App.Current.MainPage.DisplayActionSheet("Postar:", "Cancelar", null, "Texto", "Imagem");
-        if (acao == "Texto") await Shell.Current.GoToAsync(nameof(FormularioArtigoPage));
-        else if (acao == "Imagem") await Shell.Current.GoToAsync(nameof(FormularioImagemPage));
-    }
-
-    [RelayCommand] public async Task IrParaCriarTopico() => await Shell.Current.GoToAsync(nameof(FormularioTopicoPage));
-    [RelayCommand] public async Task EditarArtigo(Article artigo) => await Shell.Current.GoToAsync(nameof(FormularioArtigoPage), new Dictionary<string, object> { { "ArtigoObjeto", artigo } });
-    [RelayCommand] public async Task EditarTopico(TopicUiModel item) => await Shell.Current.GoToAsync(nameof(FormularioTopicoPage), new Dictionary<string, object> { { "TopicoObjeto", item.TopicData } });
-
-    [RelayCommand]
-    public async Task DeletarArtigo(Article artigo)
-    {
-        if (artigo == null || !await App.Current.MainPage.DisplayAlert("Excluir", "Tem certeza?", "Sim", "Não")) return;
-
-        if (await _contentService.DeletarArtigoAsync(artigo.ArticleID))
-        {
-            ArtigosExibidos.Remove(artigo);
-            _todosArtigosDaApi.Remove(artigo); // <-- ESSA É A LINHA MÁGICA QUE FALTAVA
-        }
-    }
-
-    [RelayCommand]
-    public async Task DeletarTopico(TopicUiModel item)
-    {
-        if (item == null || !await App.Current.MainPage.DisplayAlert("Excluir", "Apagar categoria e tudo nela?", "Sim", "Não")) return;
-        if (await _contentService.DeletarTopicoAsync(item.TopicData.TopicID)) await InicializarTela();
-    }
-
-    // Novos comandos para imagens se precisar editar/excluir individualmente
-    [RelayCommand]
-    public async Task DeletarImagem(TopicImage imagem)
-    {
-        if (imagem == null || !await App.Current.MainPage.DisplayAlert("Excluir", "Remover esta imagem?", "Sim", "Não")) return;
-
-        IsLoading = true;
-        try
-        {
-            var sucesso = await _contentService.DeletarImagemTopicoAsync(imagem.ImageId);
-            if (sucesso)
-            {
-                // 1. Remove da lista que está na tela agora
-                ImagensExibidas.Remove(imagem);
-
-                // 2. CORREÇÃO: Remove do cache interno do tópico
-                if (_topicoSelecionadoAtual?.TopicData?.Images != null)
-                {
-                    _topicoSelecionadoAtual.TopicData.Images.Remove(imagem);
-                }
-
-                // 3. Atualiza o estado de lista vazia
-                IsImagesEmpty = ImagensExibidas.Count == 0;
-            }
-        }
-        finally { IsLoading = false; }
-    }
-
-    [RelayCommand]
-    public async Task EditarImagem(TopicImage imagem) =>
-    await Shell.Current.GoToAsync(nameof(FormularioImagemPage),
-        new Dictionary<string, object> { { "ImagemObjeto", imagem } });
     #endregion
-
-    [RelayCommand]
-    public async Task AbrirOpcoesTopico(TopicUiModel item)
-    {
-        if (item == null) return;
-
-        // Abre um menu nativo do celular subindo pela parte de baixo da tela
-        string acao = await App.Current.MainPage.DisplayActionSheet($"Opções: {item.TopicData.Name}", "Cancelar", null, "Editar", "Excluir");
-
-        // Redireciona para os comandos que você já tem prontos!
-        if (acao == "Editar")
-        {
-            await EditarTopico(item);
-        }
-        else if (acao == "Excluir")
-        {
-            await DeletarTopico(item);
-        }
-    }
 }

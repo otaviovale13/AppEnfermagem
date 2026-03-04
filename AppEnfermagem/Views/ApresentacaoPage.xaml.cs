@@ -18,9 +18,4 @@ public partial class ApresentacaoPage : ContentPage
     {
         await Shell.Current.GoToAsync($"//{nameof(OpcoesPage)}");
     }
-
-    private async void AdminIconClick(object sender, EventArgs e)
-    {
-        await Shell.Current.GoToAsync($"//{nameof(LoginPage)}");
-    }
 }

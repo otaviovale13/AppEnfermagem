@@ -21,12 +21,12 @@
                         HeightRequest="50"
                         WidthRequest="200"
                         HorizontalOptions="Center"
-                        Command="{Binding VoltarCommand}">       
+                        Command="{Binding VoltarCommand}">
                     <Button.Shadow>
                         <Shadow Brush="Black" Offset="0,4" Radius="5" Opacity="0.2"/>
                     </Button.Shadow>
                 </Button>
-                
+
                 <VerticalStackLayout Spacing="15">
                     <Border Stroke="#004AAD" 
                             StrokeThickness="2" 
@@ -79,22 +79,8 @@
                 </VerticalStackLayout>
 
                 <VerticalStackLayout IsVisible="{Binding IsVisible}" Spacing="10">
-                    <Grid ColumnDefinitions="*, Auto" Margin="5,0">
+                    <Grid Margin="5,0">
                         <Label Text="Categorias" FontSize="18" FontAttributes="Bold" TextColor="#004AAD" VerticalOptions="Center" />
-
-                        <Border Grid.Column="1" 
-                                HeightRequest="32" 
-                                WidthRequest="32" 
-                                BackgroundColor="#8EDDDE" 
-                                StrokeShape="RoundRectangle 16"
-                                StrokeThickness="0"
-                                Padding="6"
-                                IsVisible="{Binding IsAdmin}">
-                            <Border.GestureRecognizers>
-                                <TapGestureRecognizer Command="{Binding IrParaCriarTopicoCommand}" />
-                            </Border.GestureRecognizers>
-                            <Image Source="plus_icon.png" BackgroundColor="Transparent" Aspect="AspectFit"/>
-                        </Border>
                     </Grid>
 
                     <CarouselView ItemsSource="{Binding PaginasDeTopicos}" 
@@ -128,27 +114,6 @@
                                                     </Border>
                                                     <Label Text="{Binding TopicData.Name}" TextColor="#333" FontSize="11" HorizontalTextAlignment="Center" LineBreakMode="TailTruncation"/>
                                                 </VerticalStackLayout>
-
-                                                <Border HeightRequest="26" WidthRequest="26" 
-                                                        BackgroundColor="White" 
-                                                        StrokeShape="RoundRectangle 13" 
-                                                        StrokeThickness="0"
-                                                        HorizontalOptions="End" 
-                                                        VerticalOptions="Start"
-                                                        TranslationX="-5" 
-                                                        TranslationY="-5"
-                                                        IsVisible="{Binding Source={RelativeSource AncestorType={x:Type vm:HomeViewModel}}, Path=IsAdmin}">
-
-                                                    <Border.Shadow>
-                                                        <Shadow Brush="Black" Offset="0,2" Radius="3" Opacity="0.3"/>
-                                                    </Border.Shadow>
-
-                                                    <Border.GestureRecognizers>
-                                                        <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type vm:HomeViewModel}}, Path=AbrirOpcoesTopicoCommand}" CommandParameter="{Binding .}" />
-                                                    </Border.GestureRecognizers>
-
-                                                    <Image Source="pencil_icon.png" Aspect="AspectFit" Margin="5"/>
-                                                </Border>
 
                                             </Grid>
                                         </DataTemplate>
@@ -190,31 +155,9 @@
                                     </Border.Shadow>
 
                                     <VerticalStackLayout Spacing="8">
-                                        <Grid ColumnDefinitions="*, Auto">
-                                            <Label FontSize="16" FontAttributes="Bold" Text="{Binding Title}" TextColor="#004AAD" LineBreakMode="WordWrap"/>
-                                            <HorizontalStackLayout Grid.Column="1" Spacing="10" IsVisible="{Binding Source={RelativeSource AncestorType={x:Type vm:HomeViewModel}}, Path=IsAdmin}">
-                                                <Image Source="pencil_icon.png" 
-                                                       HeightRequest="30" 
-                                                       WidthRequest="30" 
-                                                       Aspect="AspectFit">
-                                                    <Image.GestureRecognizers>
-                                                        <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type vm:HomeViewModel}}, Path=EditarArtigoCommand}" CommandParameter="{Binding .}"/>
-                                                    </Image.GestureRecognizers>
-                                                </Image>
-                                                <Image Source="trash_icon.png" 
-                                                       HeightRequest="30" 
-                                                       WidthRequest="30" 
-                                                       Aspect="AspectFit">
-                                                    <Image.GestureRecognizers>
-                                                        <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type vm:HomeViewModel}}, Path=DeletarArtigoCommand}" CommandParameter="{Binding .}"/>
-                                                    </Image.GestureRecognizers>
-                                                </Image>
-                                            </HorizontalStackLayout>
-                                        </Grid>
+                                        <Label FontSize="16" FontAttributes="Bold" Text="{Binding Title}" TextColor="#004AAD" LineBreakMode="WordWrap"/>
                                         <BoxView HeightRequest="1" Color="#F0F0F0" />
-
                                         <Label FontSize="12" TextColor="#555" Text="{Binding ContentBody}" LineBreakMode="WordWrap" />
-
                                     </VerticalStackLayout>
                                 </Border>
                             </DataTemplate>
@@ -222,7 +165,7 @@
                     </VerticalStackLayout>
                 </VerticalStackLayout>
 
-                <VerticalStackLayout Spacing="15" IsVisible="{Binding IsModeImages}">
+                <VerticalStackLayout Spacing="15" IsVisible="{Binding IsModeImages}" Margin="0,0,0,40">
                     <Label Text="Nenhuma imagem disponível 📷" TextColor="Gray" FontSize="14" HorizontalOptions="Center" Margin="0,20" IsVisible="{Binding IsImagesEmpty}" />
 
                     <VerticalStackLayout BindableLayout.ItemsSource="{Binding ImagensExibidas}" Spacing="15">
@@ -242,34 +185,6 @@
                                                 </Label.GestureRecognizers>
                                             </Label>
                                         </Border>
-
-                                        <HorizontalStackLayout Grid.Row="0" HorizontalOptions="End" VerticalOptions="Start" Margin="10" Spacing="8" IsVisible="{Binding Source={RelativeSource AncestorType={x:Type vm:HomeViewModel}}, Path=IsAdmin}">
-                                            <Border StrokeShape="RoundRectangle 15" StrokeThickness="0" BackgroundColor="White" Padding="10">
-                                                <Border.Shadow>
-                                                    <Shadow Brush="Black" Offset="0,2" Radius="3" Opacity="0.2" />
-                                                </Border.Shadow>
-                                                <HorizontalStackLayout Spacing="15">
-                                                    <Image Source="pencil_icon.png" 
-                                                           HeightRequest="30" 
-                                                           WidthRequest="30" 
-                                                           Aspect="AspectFit">
-                                                        <Image.GestureRecognizers>
-                                                            <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type vm:HomeViewModel}}, Path=EditarImagemCommand}" 
-                                                                                  CommandParameter="{Binding .}"/>
-                                                        </Image.GestureRecognizers>
-                                                    </Image>
-                                                    <Image Source="trash_icon.png" 
-                                                           HeightRequest="30" 
-                                                           WidthRequest="30" 
-                                                           Aspect="AspectFit">
-                                                        <Image.GestureRecognizers>
-                                                            <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type vm:HomeViewModel}}, Path=DeletarImagemCommand}" 
-                                                                                  CommandParameter="{Binding .}"/>
-                                                        </Image.GestureRecognizers>
-                                                    </Image>
-                                                </HorizontalStackLayout>
-                                            </Border>
-                                        </HorizontalStackLayout>
                                     </Grid>
                                 </Border>
                             </DataTemplate>
@@ -277,30 +192,36 @@
                     </VerticalStackLayout>
                 </VerticalStackLayout>
 
-                <Button Text="+ Novo Conteúdo" 
-                        BackgroundColor="#004AAD" 
-                        TextColor="White" 
-                        FontSize="16" 
-                        FontAttributes="Bold" 
-                        CornerRadius="25" 
-                        HeightRequest="50" 
-                        Margin="0,10,0,40"
-                        IsVisible="{Binding IsAdmin}" 
-                        Command="{Binding SelecionarTipoPostagemCommand}"
-                        Shadow="{Shadow Brush=Black, Offset='0,4', Radius=5, Opacity=0.2}"/>
-
             </VerticalStackLayout>
         </ScrollView>
 
-        <Grid IsVisible="{Binding IsImagePopupVisible}" BackgroundColor="#CC000000" HorizontalOptions="Fill" VerticalOptions="Fill" RowDefinitions="*, Auto" Margin="-20">
+        <Grid IsVisible="{Binding IsImagePopupVisible}" BackgroundColor="#CC000000" HorizontalOptions="Fill" VerticalOptions="Fill" Margin="-20">
+
             <Grid.GestureRecognizers>
                 <TapGestureRecognizer Command="{Binding FecharImagemCommand}" />
             </Grid.GestureRecognizers>
-            <VerticalStackLayout Grid.Row="0" VerticalOptions="Center" Spacing="10" Padding="20">
-                <Image Source="{Binding ImagemSelecionadaParaZoom.ImageUrl}" Aspect="AspectFit" MaximumHeightRequest="500" />
+
+            <VerticalStackLayout VerticalOptions="Center" Spacing="20" Padding="20">
+                <Image Source="{Binding ImagemSelecionadaParaZoom.ImageUrl}" Aspect="AspectFit" MaximumHeightRequest="450" />
+
                 <Label Text="{Binding ImagemSelecionadaParaZoom.Caption}" HorizontalOptions="Center" TextColor="White" FontSize="18" FontAttributes="Bold"/>
+
+                <Button Text="⬇️ Transferir / Partilhar"
+                        BackgroundColor="#8EDDDE"
+                        TextColor="#004AAD"
+                        FontAttributes="Bold"
+                        CornerRadius="25"
+                        HeightRequest="50"
+                        WidthRequest="220"
+                        HorizontalOptions="Center"
+                        Command="{Binding BaixarImagemCommand}">
+                    <Button.Shadow>
+                        <Shadow Brush="Black" Offset="0,4" Radius="5" Opacity="0.3"/>
+                    </Button.Shadow>
+                </Button>
+
+                <Label Text="Toque fora da imagem para fechar" TextColor="White" HorizontalOptions="Center" Margin="0,10,0,0" Opacity="0.7" />
             </VerticalStackLayout>
-            <Label Grid.Row="1" Text="Toque para fechar" TextColor="White" HorizontalOptions="Center" Margin="0,0,0,40" />
         </Grid>
 
         <Grid BackgroundColor="#80000000" IsVisible="{Binding IsLoading}" Margin="-20">

@@ -16,10 +16,6 @@ public partial class HomePage : ContentPage
 
         if (BindingContext is HomeViewModel vm)
         {
-            // 1. Atualiza se é admin ou não
-            vm.VerificarStatusAdmin();
-
-            // 2. Recarrega os dados (caso tenha editado algo)
             await vm.InicializarTela();
         }
     }

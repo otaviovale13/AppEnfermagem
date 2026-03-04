@@ -5,28 +5,30 @@
              Title="OpcoesPage"
              BackgroundColor="#F8F8F8"
              NavigationPage.HasNavigationBar="False">
-    <Grid RowDefinitions="Auto, *" Margin="20">
 
-        <ScrollView Grid.Row="1">
+    <Grid Margin="15">
+
+        <ScrollView VerticalOptions="Center" HorizontalOptions="Center">
+
             <VerticalStackLayout Spacing="25"
-                             HorizontalOptions="Center"
-                             VerticalOptions="Center">
+                                 HorizontalOptions="Center"
+                                 Padding="0,20">
 
                 <Border Stroke="#1a5276"
-                    StrokeThickness="3"
-                    StrokeShape="RoundRectangle 110"
-                    HeightRequest="220"
-                    WidthRequest="220"
-                    HorizontalOptions="Center"
-                    BackgroundColor="White">
+                        StrokeThickness="3"
+                        StrokeShape="RoundRectangle 110"
+                        HeightRequest="220"
+                        WidthRequest="220"
+                        HorizontalOptions="Center"
+                        BackgroundColor="White">
 
                     <Image Source="logo.jpg"
-                       Aspect="AspectFill"
-                       HorizontalOptions="Fill"
-                       VerticalOptions="Fill"/>
+                           Aspect="AspectFill"
+                           HorizontalOptions="Fill"
+                           VerticalOptions="Fill"/>
                 </Border>
 
-                <VerticalStackLayout Spacing="10">
+                <VerticalStackLayout Spacing="15" Margin="0,10,0,0">
                     <Button Text="Ver artigos"
                             BackgroundColor="#004AAD"
                             TextColor="White"
@@ -35,7 +37,6 @@
                             CornerRadius="25"
                             HeightRequest="50"
                             WidthRequest="200"
-                            Margin="0,20,0,0"
                             HorizontalOptions="Center"
                             Command="{Binding IrArtigosCommand}">
                         <Button.Shadow>
@@ -51,7 +52,6 @@
                             CornerRadius="25"
                             HeightRequest="50"
                             WidthRequest="200"
-                            Margin="0,20,0,0"
                             HorizontalOptions="Center"
                             Command="{Binding IrSuporteCommand}">
                         <Button.Shadow>
@@ -67,7 +67,6 @@
                             CornerRadius="25"
                             HeightRequest="50"
                             WidthRequest="200"
-                            Margin="0,20,0,0"
                             HorizontalOptions="Center"
                             Command="{Binding IrAjudaCommand}">
                         <Button.Shadow>

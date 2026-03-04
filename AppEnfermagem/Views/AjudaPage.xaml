@@ -5,12 +5,13 @@
              Title="AjudaPage"
              BackgroundColor="#F8F8F8"
              NavigationPage.HasNavigationBar="False">
-    <Grid RowDefinitions="Auto, *" Margin="20">
 
-        <ScrollView Grid.Row="1">
+    <Grid Margin="15">
+
+        <ScrollView>
             <VerticalStackLayout Spacing="25"
                                  HorizontalOptions="Center"
-                                 VerticalOptions="Center">
+                                 Padding="0,20">
 
                 <Button Text="Voltar"
                         BackgroundColor="#004AAD"
@@ -27,10 +28,17 @@
                     </Button.Shadow>
                 </Button>
 
-                <Label FontSize="16" FontAttributes="Bold" Text="💙 Juntos, fortalecendo a arte de cuidar!" TextColor="#004AAD" LineBreakMode="WordWrap" HorizontalTextAlignment="Center" VerticalTextAlignment="Center"/>
+                <Label FontSize="16" 
+                       FontAttributes="Bold" 
+                       Text="💙 Juntos, fortalecendo a arte de cuidar!" 
+                       TextColor="#004AAD" 
+                       LineBreakMode="WordWrap" 
+                       HorizontalTextAlignment="Center" />
 
                 <Image Source="qrcode_pix.png" 
-                       WidthRequest="200" />
+                       WidthRequest="200"
+                       HeightRequest="200" 
+                       HorizontalOptions="Center"/>
 
                 <Button Text="{Binding CopyButtonText}"
                         BackgroundColor="#004AAD"
@@ -47,18 +55,12 @@
                     </Button.Shadow>
                 </Button>
 
-                <Label FontSize="12" TextColor="#555" Text="A enfermagem é, acima de tudo, a ciência e a arte de cuidar do próximo. E para que você possa continuar se dedicando a aprender e a salvar vidas, o nosso app nasceu com o propósito de facilitar a sua jornada diária de estudos.
-                       &#10;&#10;Nosso maior objetivo é oferecer conteúdo prático, rápido e de qualidade para todos os estudantes e profissionais da área. No entanto, manter este projeto gratuito e no ar – arcando com custos de servidores, atualizações e melhorias – é um grande desafio e exige recursos.
-                       &#10;&#10;Se o nosso aplicativo tem feito a diferença nos seus estudos, provas ou plantões, considere apoiar o nosso trabalho!
-                       &#10;&#10;Como contribuir:
-                       &#10;&#10;Qualquer valor é muito bem-vindo e faz uma diferença enorme para manter a plataforma viva e sempre atualizada para você.
-                       &#10;&#10;Aponte a câmera do seu celular para o QR Code.
-                       &#10;&#10;Ou clique no botão Pix Copia-e-cola para usar no aplicativo do seu banco.
-                       &#10;&#10;Com o apoio de mãos que cuidam como as suas, podemos continuar transformando a educação em saúde. Muito obrigado por fazer parte da nossa comunidade!" 
+                <Label FontSize="13" 
+                       TextColor="#555" 
+                       Margin="10,0"
                        LineBreakMode="WordWrap"
-                       WidthRequest="400"
                        HorizontalTextAlignment="Center"
-                       VerticalTextAlignment="Center"/>
+                       Text="A enfermagem é, acima de tudo, a ciência e a arte de cuidar do próximo. E para que você possa continuar se dedicando a aprender e a salvar vidas, o nosso app nasceu com o propósito de facilitar a sua jornada diária de estudos.&#10;&#10;Nosso maior objetivo é oferecer conteúdo prático, rápido e de qualidade para todos os estudantes e profissionais da área. No entanto, manter este projeto gratuito e no ar – arcando com custos de servidores, atualizações e melhorias – é um grande desafio e exige recursos.&#10;&#10;Se o nosso aplicativo tem feito a diferença nos seus estudos, provas ou plantões, considere apoiar o nosso trabalho!&#10;&#10;Como contribuir:&#10;&#10;Qualquer valor é muito bem-vindo e faz uma diferença enorme para manter a plataforma viva e sempre atualizada para você.&#10;&#10;Aponte a câmera do seu celular para o QR Code.&#10;&#10;Ou clique no botão Pix Copia-e-cola para usar no aplicativo do seu banco.&#10;&#10;Com o apoio de mãos que cuidam como as suas, podemos continuar transformando a educação em saúde. Muito obrigado por fazer parte da nossa comunidade!" />
 
             </VerticalStackLayout>
         </ScrollView>
