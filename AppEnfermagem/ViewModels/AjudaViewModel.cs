@@ -22,7 +22,7 @@ public partial class AjudaViewModel : ObservableObject
     [RelayCommand]
     private async Task CopyPix()
     {
-        await Clipboard.Default.SetTextAsync("00020126330014BR.GOV.BCB.PIX0111422403428035204000053039865802BR5901N6001C62070503***63047C2B");
+        await Clipboard.Default.SetTextAsync("00020126360014BR.GOV.BCB.PIX0114+55119393944275204000053039865802BR5901N6001C62070503***6304C18A");
 
         string original = CopyButtonText;
         CopyButtonText = "Copiado!";
