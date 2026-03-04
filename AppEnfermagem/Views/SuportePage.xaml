@@ -1,12 +1,150 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:AppEnfermagem.ViewModels"
+             xmlns:models="clr-namespace:AppEnfermagem.Models"
              x:Class="AppEnfermagem.Views.SuportePage"
-             Title="SuportePage">
-    <VerticalStackLayout>
-        <Label 
-            Text="Welcome to .NET MAUI!"
-            VerticalOptions="Center" 
-            HorizontalOptions="Center" />
-    </VerticalStackLayout>
+             x:DataType="vm:SuporteViewModel"
+             Title="Mural de Dúvidas"
+             BackgroundColor="#F8F8F8">
+
+    <Grid>
+        <ScrollView Padding="20">
+            <VerticalStackLayout Spacing="25">
+
+                <Button Text="Voltar"
+                        BackgroundColor="#004AAD"
+                        TextColor="White"
+                        FontSize="16"
+                        FontAttributes="Bold"
+                        CornerRadius="25"
+                        HeightRequest="50"
+                        WidthRequest="200"
+                        HorizontalOptions="Center"
+                        Command="{Binding VoltarCommand}">
+                    <Button.Shadow>
+                        <Shadow Brush="Black" Offset="0,4" Radius="5" Opacity="0.2"/>
+                    </Button.Shadow>
+                </Button>
+
+                <VerticalStackLayout Spacing="5">
+                    <Label Text="Mural de Dúvidas"
+                           FontSize="24"
+                           FontAttributes="Bold"
+                           TextColor="#004AAD"
+                           HorizontalOptions="Center" />
+
+                    <Label Text="Deixe sua dúvida, sugestão ou pedido de ajuda. Nossa comunidade e equipe estão aqui para ajudar!"
+                           FontSize="14"
+                           TextColor="Gray"
+                           HorizontalTextAlignment="Center" />
+                </VerticalStackLayout>
+
+                <Border Stroke="#004AAD"
+                        StrokeThickness="2"
+                        BackgroundColor="White"
+                        Padding="15"
+                        StrokeShape="RoundRectangle 15">
+                    <Border.Shadow>
+                        <Shadow Brush="Black" Offset="0,4" Radius="5" Opacity="0.1"/>
+                    </Border.Shadow>
+
+                    <VerticalStackLayout Spacing="15">
+                        <Label Text="Faça uma pergunta" FontAttributes="Bold" TextColor="#004AAD" FontSize="16"/>
+
+                        <Border BackgroundColor="#F5F5F5" StrokeThickness="0" StrokeShape="RoundRectangle 10" Padding="10,0">
+                            <Entry Placeholder="Seu Nome (Opcional)" Text="{Binding NomeUsuario}" TextColor="Black" BackgroundColor="Transparent"/>
+                        </Border>
+
+                        <Border BackgroundColor="#F5F5F5" StrokeThickness="0" StrokeShape="RoundRectangle 10" Padding="10,0">
+                            <Entry Placeholder="Assunto / Título *" Text="{Binding NovoTitulo}" TextColor="Black" BackgroundColor="Transparent"/>
+                        </Border>
+
+                        <Border BackgroundColor="#F5F5F5" StrokeThickness="0" StrokeShape="RoundRectangle 10" Padding="10,5">
+                            <Editor Placeholder="Escreva os detalhes da sua dúvida aqui... *" 
+                                    Text="{Binding NovaDuvida}" 
+                                    HeightRequest="100" 
+                                    TextColor="Black" 
+                                    BackgroundColor="Transparent"/>
+                        </Border>
+
+                        <Button Text="Enviar Postagem"
+                                Command="{Binding EnviarDuvidaCommand}"
+                                BackgroundColor="#004AAD"
+                                TextColor="White"
+                                FontAttributes="Bold"
+                                CornerRadius="20"
+                                HeightRequest="45"/>
+                    </VerticalStackLayout>
+                </Border>
+
+                <BoxView HeightRequest="1" Color="#E0E0E0" Margin="0,5" />
+
+                <Label Text="Últimas Discussões" FontSize="18" FontAttributes="Bold" TextColor="#004AAD" />
+
+                <VerticalStackLayout BindableLayout.ItemsSource="{Binding ListaPosts}" Spacing="20">
+                    <BindableLayout.ItemTemplate>
+                        <DataTemplate x:DataType="models:ForumPost">
+                            <Border Stroke="#E0E0E0"
+                                    StrokeThickness="1"
+                                    BackgroundColor="White"
+                                    Padding="15"
+                                    StrokeShape="RoundRectangle 15">
+                                <Border.Shadow>
+                                    <Shadow Brush="Black" Offset="0,2" Radius="5" Opacity="0.1" />
+                                </Border.Shadow>
+
+                                <VerticalStackLayout Spacing="8">
+                                    <Label Text="{Binding Title}" FontAttributes="Bold" FontSize="16" TextColor="#333333" />
+
+                                    <HorizontalStackLayout Spacing="5">
+                                        <Label Text="Por" FontSize="12" TextColor="Gray" />
+                                        <Label Text="{Binding AuthorName}" FontSize="12" FontAttributes="Bold" TextColor="#004AAD" />
+                                        <Label Text="em" FontSize="12" TextColor="Gray" />
+                                        <Label Text="{Binding CreatedAt, StringFormat='{0:dd/MM/yyyy}'}" FontSize="12" TextColor="Gray" />
+                                    </HorizontalStackLayout>
+
+                                    <Label Text="{Binding ContentBody}" FontSize="14" TextColor="#555555" Margin="0,5,0,10" />
+
+                                    <VerticalStackLayout BindableLayout.ItemsSource="{Binding Replies}" Spacing="10" Margin="15,0,0,0">
+                                        <BindableLayout.ItemTemplate>
+                                            <DataTemplate x:DataType="models:ForumReply">
+                                                <Border StrokeThickness="0" Padding="10" StrokeShape="RoundRectangle 10">
+                                                    <Border.Triggers>
+                                                        <DataTrigger TargetType="Border" Binding="{Binding IsAdminReply}" Value="True">
+                                                            <Setter Property="BackgroundColor" Value="#E6F2FF" />
+                                                        </DataTrigger>
+                                                        <DataTrigger TargetType="Border" Binding="{Binding IsAdminReply}" Value="False">
+                                                            <Setter Property="BackgroundColor" Value="#F5F5F5" />
+                                                        </DataTrigger>
+                                                    </Border.Triggers>
+
+                                                    <VerticalStackLayout>
+                                                        <HorizontalStackLayout Spacing="5">
+                                                            <Label Text="✔️" FontSize="10" VerticalOptions="Center" IsVisible="{Binding IsAdminReply}"/>
+                                                            <Label Text="{Binding AuthorName}" FontAttributes="Bold" FontSize="13" TextColor="#004AAD" />
+                                                            <Label Text="respondeu:" FontSize="12" TextColor="Gray" VerticalOptions="Center" />
+                                                        </HorizontalStackLayout>
+
+                                                        <Label Text="{Binding ContentBody}" FontSize="13" TextColor="#333333" Margin="0,5,0,0" />
+                                                        <Label Text="{Binding CreatedAt, StringFormat='{0:dd/MM HH:mm}'}" FontSize="10" TextColor="Gray" HorizontalOptions="End" />
+                                                    </VerticalStackLayout>
+                                                </Border>
+                                            </DataTemplate>
+                                        </BindableLayout.ItemTemplate>
+                                    </VerticalStackLayout>
+
+                                </VerticalStackLayout>
+                            </Border>
+                        </DataTemplate>
+                    </BindableLayout.ItemTemplate>
+                </VerticalStackLayout>
+
+            </VerticalStackLayout>
+        </ScrollView>
+
+        <Grid BackgroundColor="#80000000" IsVisible="{Binding IsLoading}">
+            <ActivityIndicator IsRunning="{Binding IsLoading}" Color="#8EDDDE" VerticalOptions="Center" HorizontalOptions="Center" HeightRequest="50" WidthRequest="50"/>
+        </Grid>
+    </Grid>
 </ContentPage>

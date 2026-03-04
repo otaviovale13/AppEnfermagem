@@ -24,6 +24,11 @@ public interface IContentService
     Task<bool> CriarImagemTopicoAsync(TopicImage topicImage);
     Task<bool> AtualizarImagemTopicoAsync(TopicImage topicImage);
     Task<bool> DeletarImagemTopicoAsync(int imageId);
+
+    // Fórum / Suporte
+    Task<List<ForumPost>> ObterForumPostsAsync();
+    Task<bool> CriarForumPostAsync(ForumPost post);
+    Task<bool> CriarForumReplyAsync(ForumReply reply);
 }
 
 public class ContentService : IContentService
@@ -112,6 +117,42 @@ public class ContentService : IContentService
         {
             // Rota: api/Content/topico/imagem/{id}
             var resp = await _httpClient.DeleteAsync($"{BaseUrl}/topico/imagem/{imageId}");
+            return resp.IsSuccessStatusCode;
+        }
+        catch { return false; }
+    }
+    #endregion
+
+    #region FÓRUM / SUPORTE
+    public async Task<List<ForumPost>> ObterForumPostsAsync()
+    {
+        try
+        {
+            // Rota da sua API para o Fórum
+            var posts = await _httpClient.GetFromJsonAsync<List<ForumPost>>("api/Forum");
+            return posts ?? new List<ForumPost>();
+        }
+        catch
+        {
+            return new List<ForumPost>();
+        }
+    }
+
+    public async Task<bool> CriarForumPostAsync(ForumPost post)
+    {
+        try
+        {
+            var resp = await _httpClient.PostAsJsonAsync("api/Forum/post", post);
+            return resp.IsSuccessStatusCode;
+        }
+        catch { return false; }
+    }
+
+    public async Task<bool> CriarForumReplyAsync(ForumReply reply)
+    {
+        try
+        {
+            var resp = await _httpClient.PostAsJsonAsync("api/Forum/reply", reply);
             return resp.IsSuccessStatusCode;
         }
         catch { return false; }
