@@ -38,5 +38,20 @@
         ContentTemplate="{DataTemplate local:InicioPage}"
         Route="InicioPage" />
 
+    <ShellContent
+        Title="Opcoes"
+        ContentTemplate="{DataTemplate local:OpcoesPage}"
+        Route="OpcoesPage" />
+
+    <ShellContent
+        Title="Suporte"
+        ContentTemplate="{DataTemplate local:SuportePage}"
+        Route="SuportePage" />
+
+    <ShellContent
+        Title="Ajuda"
+        ContentTemplate="{DataTemplate local:AjudaPage}"
+        Route="AjudaPage" />
+
 </Shell>
 

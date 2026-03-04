@@ -99,6 +99,12 @@ public partial class HomeViewModel : ObservableObject
         IsImagePopupVisible = false;
         ImagemSelecionadaParaZoom = null;
     }
+
+    [RelayCommand]
+    public async Task Voltar()
+    {
+        await Shell.Current.GoToAsync($"//{nameof(OpcoesPage)}");
+    }
     #endregion
 
     #region GERENCIAMENTO DE TÓPICOS

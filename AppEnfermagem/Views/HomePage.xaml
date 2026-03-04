@@ -12,6 +12,21 @@
     <Grid Margin="20">
         <ScrollView>
             <VerticalStackLayout Margin="20" Spacing="20">
+                <Button Text="Voltar"
+                        BackgroundColor="#004AAD"
+                        TextColor="White"
+                        FontSize="16"
+                        FontAttributes="Bold"
+                        CornerRadius="25"
+                        HeightRequest="50"
+                        WidthRequest="200"
+                        HorizontalOptions="Center"
+                        Command="{Binding VoltarCommand}">       
+                    <Button.Shadow>
+                        <Shadow Brush="Black" Offset="0,4" Radius="5" Opacity="0.2"/>
+                    </Button.Shadow>
+                </Button>
+                
                 <VerticalStackLayout Spacing="15">
                     <Border Stroke="#004AAD" 
                             StrokeThickness="2" 

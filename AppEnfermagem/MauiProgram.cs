@@ -54,6 +54,17 @@ namespace AppEnfermagem
            
             builder.Services.AddTransient<InicioPage>();
 
+            builder.Services.AddTransient<ApresentacaoPage>();
+
+            builder.Services.AddTransient<OpcoesViewModel>();
+            builder.Services.AddTransient<OpcoesPage>();
+
+            builder.Services.AddTransient<SuporteViewModel>();
+            builder.Services.AddTransient<SuportePage>();
+
+            builder.Services.AddTransient<AjudaViewModel>();
+            builder.Services.AddTransient<AjudaPage>();
+
             builder.Services.AddTransient<FormularioArtigoPage>();
             builder.Services.AddTransient<FormularioArtigoViewModel>();
 

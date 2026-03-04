@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="AppEnfermagem.Views.OpcoesPage"
+             Title="OpcoesPage"
+             BackgroundColor="#F8F8F8"
+             NavigationPage.HasNavigationBar="False">
+    <Grid RowDefinitions="Auto, *" Margin="20">
+
+        <ScrollView Grid.Row="1">
+            <VerticalStackLayout Spacing="25"
+                             HorizontalOptions="Center"
+                             VerticalOptions="Center">
+
+                <Border Stroke="#1a5276"
+                    StrokeThickness="3"
+                    StrokeShape="RoundRectangle 110"
+                    HeightRequest="220"
+                    WidthRequest="220"
+                    HorizontalOptions="Center"
+                    BackgroundColor="White">
+
+                    <Image Source="logo.jpg"
+                       Aspect="AspectFill"
+                       HorizontalOptions="Fill"
+                       VerticalOptions="Fill"/>
+                </Border>
+
+                <VerticalStackLayout Spacing="10">
+                    <Button Text="Ver artigos"
+                            BackgroundColor="#004AAD"
+                            TextColor="White"
+                            FontSize="16"
+                            FontAttributes="Bold"
+                            CornerRadius="25"
+                            HeightRequest="50"
+                            WidthRequest="200"
+                            Margin="0,20,0,0"
+                            HorizontalOptions="Center"
+                            Command="{Binding IrArtigosCommand}">
+                        <Button.Shadow>
+                            <Shadow Brush="Black" Offset="0,4" Radius="5" Opacity="0.2"/>
+                        </Button.Shadow>
+                    </Button>
+
+                    <Button Text="Suporte Técnico"
+                            BackgroundColor="#004AAD"
+                            TextColor="White"
+                            FontSize="16"
+                            FontAttributes="Bold"
+                            CornerRadius="25"
+                            HeightRequest="50"
+                            WidthRequest="200"
+                            Margin="0,20,0,0"
+                            HorizontalOptions="Center"
+                            Command="{Binding IrSuporteCommand}">
+                        <Button.Shadow>
+                            <Shadow Brush="Black" Offset="0,4" Radius="5" Opacity="0.2"/>
+                        </Button.Shadow>
+                    </Button>
+
+                    <Button Text="Ajudar o Aplicativo"
+                            BackgroundColor="#004AAD"
+                            TextColor="White"
+                            FontSize="16"
+                            FontAttributes="Bold"
+                            CornerRadius="25"
+                            HeightRequest="50"
+                            WidthRequest="200"
+                            Margin="0,20,0,0"
+                            HorizontalOptions="Center"
+                            Command="{Binding IrAjudaCommand}">
+                        <Button.Shadow>
+                            <Shadow Brush="Black" Offset="0,4" Radius="5" Opacity="0.2"/>
+                        </Button.Shadow>
+                    </Button>
+                </VerticalStackLayout>
+
+            </VerticalStackLayout>
+        </ScrollView>
+    </Grid>
+</ContentPage>

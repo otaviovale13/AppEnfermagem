@@ -16,7 +16,7 @@ public partial class ApresentacaoPage : ContentPage
 
     private async void SaibaMais_Clicked(object sender, EventArgs e)
     {
-        await Shell.Current.GoToAsync("//HomePage");
+        await Shell.Current.GoToAsync($"//{nameof(OpcoesPage)}");
     }
 
     private async void AdminIconClick(object sender, EventArgs e)
